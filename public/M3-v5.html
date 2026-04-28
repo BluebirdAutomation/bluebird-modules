@@ -1,0 +1,1040 @@
+<!-- LAST_VERIFIED: 2026-04-28 -->
+<!-- FINGERPRINT: Bluebird Academy Module 3 — Claude for Content Creation. 11 steps including intro and complete screen. Interactive module teaching students how to use Claude for social media content creation. Step 1 intro screen with what-you-will-build cards. Steps 1-9 map to: why AI content sounds generic, build your brand voice doc (with animated typewriter demo of Bluebird instructions), anatomy of a caption (hook/body/close anatomy table), live caption builder (platform selector + hook type + raw idea field + Claude API generation), one idea to five pieces of content (repurpose table), Bluebird prompt library (5 copyable prompt cards), the editing loop (4-step checklist with interactive tick-off), which model to use (comparison cards), content machine capstone (checklist of 5 completed items). Real Dan and Emma quotes on every step. Complete screen with prompt starter pack. Claude API Q&A drawer with suggested questions per step. Sidebar step navigation. Coach strip alternates Emma and Dan. Browser frame shows claude.ai URLs. Module uses claude-sonnet-4-20250514. No employer names in content. v5: All API calls routed through /api/claude Vercel proxy (no CORS issues). Duplicate prompt cards fixed. Editing loop rebuilt as 3-stage AI workflow: paste draft, Claude applies editing loop, see before/after + copy the reusable edit prompt. v4: Live before/after demo on Step 1 (student types topic, sees generic vs voice-loaded output side by side). Interactive edit exercise on Step 7 with AI-ism checker. Caption builder with full error surfacing, richer prompt with platform/hook descriptions, edit nudge after generation. 10-prompt library (Voice Match, Content Multiplier, Brutal Editor, Anti-Guru Thread, Hook Generator, LinkedIn Reframe, Instagram Caption Pack, Contrarian Hook, Content Strategist Audit, Weekly Batch System). Prompts filterable by tag (voice/caption/hook/repurpose/edit/strategy). Meta Rule callout on prompt step. Voice Match teaser on Step 1. Builder examples auto-select platform+hook. Complete screen shows top 5 prompts. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude for Content Creation · Bluebird Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F3F0;--s1:#FFFFFF;--s2:#F0EDE8;--s3:#E8E4DE;
+  --b1:#E2DDD7;--b2:#D4CEC7;--b3:#B8B2AA;
+  --t1:#1A1916;--t2:#4A4742;--t3:#8A8480;--t4:#B8B4B0;
+  --bb:#2F7BE5;--bb2:#1A65CC;--bb-a:rgba(47,123,229,0.10);--bb-b:rgba(47,123,229,0.06);
+  --green:#16A34A;--green-a:rgba(22,163,74,0.08);--green-b:rgba(22,163,74,0.05);
+  --yellow:#D97706;--red:#DC2626;--red-a:rgba(220,38,38,0.07);
+  --blue:#2563EB;--blue-a:rgba(37,99,235,0.08);
+  --emma:#DB2777;--emma-a:rgba(219,39,119,0.08);
+  --dan:#2563EB;--dan-a:rgba(37,99,235,0.08);
+  --qa:#7C3AED;--qa-a:rgba(124,58,237,0.08);
+  --cl-bg:#FAF9F7;--cl-sb:#EFECE7;--cl-sb-b:#E2DDD7;
+  --cl-txt:#1A1916;--cl-txt2:#6B6860;--cl-txt3:#9E9A95;
+  --cl-inp:#FFFFFF;--cl-inp-b:#D4CFC9;
+  --cl-user:#ECEAE6;--cl-hover:#E8E4DE;--cl-accent:#D97706;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--t1);font-family:'DM Sans',sans-serif;font-size:13px;-webkit-font-smoothing:antialiased;}
+.shell{display:grid;grid-template-rows:56px 1fr;height:100vh;}
+.body{display:grid;grid-template-columns:272px 1fr;overflow:hidden;}
+.topbar{background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;padding:0 20px;grid-column:1/-1;box-shadow:0 1px 0 var(--b1);}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-logo{width:30px;height:30px;background:var(--bb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 1px 3px rgba(47,123,229,0.25);}
+.tb-brand{font-weight:700;font-size:13px;color:var(--t1);letter-spacing:-.01em;}
+.tb-divider{width:1px;height:16px;background:var(--b2);margin:0 4px;}
+.tb-crumb{font-size:12px;color:var(--t3);}
+.tb-right{display:flex;align-items:center;gap:6px;}
+.pips{display:flex;gap:3px;align-items:center;}
+.pip{height:3px;width:14px;border-radius:3px;background:var(--b2);transition:all .35s;}
+.pip.done{background:var(--green);}
+.pip.now{background:var(--bb);width:24px;}
+.pip-label{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.sidebar{background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
+.sb-head{padding:16px;border-bottom:1px solid var(--b1);}
+.sb-head-title{font-weight:600;font-size:13px;color:var(--t1);margin-bottom:2px;}
+.sb-head-sub{font-size:11px;color:var(--t3);}
+.sb-steps{padding:6px 0;flex:1;overflow-y:auto;}
+.sb-step{display:flex;gap:10px;align-items:flex-start;padding:9px 16px;cursor:pointer;position:relative;border-left:2px solid transparent;transition:all .15s;}
+.sb-step:hover{background:var(--s2);}
+.sb-step.active{background:var(--bb-b);border-left-color:var(--bb);}
+.sb-step.done{opacity:.55;}
+.sb-step.done:hover{opacity:.85;}
+.sb-n{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--t3);flex-shrink:0;transition:all .2s;font-family:'JetBrains Mono',monospace;}
+.sb-step.active .sb-n{border-color:var(--bb);color:var(--bb);background:var(--bb-a);}
+.sb-step.done .sb-n{border-color:var(--green);color:var(--green);background:var(--green-a);}
+.sb-info{flex:1;}
+.sb-name{font-weight:500;font-size:12px;color:var(--t1);margin-bottom:1px;line-height:1.3;}
+.sb-line{position:absolute;left:27px;top:32px;bottom:-9px;width:1px;background:var(--b1);}
+.sb-step:last-child .sb-line{display:none;}
+.sb-qa-section{border-top:1px solid var(--b1);padding:12px 16px;}
+.sb-qa-title{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.sb-qa-item{padding:7px 8px;border-radius:7px;background:var(--s2);border:1px solid var(--b1);margin-bottom:4px;cursor:pointer;transition:all .15s;}
+.sb-qa-item:hover{border-color:var(--qa);background:var(--qa-a);}
+.sb-qa-q{font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-qa-meta{font-size:10px;color:var(--t3);margin-top:2px;}
+.sb-qa-empty{font-size:11px;color:var(--t3);font-style:italic;}
+.main{display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.coach{background:var(--s1);border-bottom:1px solid var(--b1);padding:8px 16px;display:flex;gap:10px;align-items:center;flex-shrink:0;}
+.coach-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.coach-av.emma{background:var(--emma-a);border:1.5px solid var(--emma);}
+.coach-av.dan{background:var(--dan-a);border:1.5px solid var(--dan);}
+.coach-av.qa{background:var(--qa-a);border:1.5px solid var(--qa);}
+.coach-who{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;}
+.coach-who.emma{color:var(--emma);}
+.coach-who.dan{color:var(--dan);}
+.coach-line{font-size:12px;color:var(--t2);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4;}
+.ask-btn{padding:4px 11px;border-radius:6px;font-size:10px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;background:var(--qa-a);color:var(--qa);border:1px solid rgba(124,58,237,.2);flex-shrink:0;transition:all .15s;white-space:nowrap;}
+.ask-btn:hover{background:rgba(124,58,237,.14);}
+.dots{display:inline-flex;gap:3px;align-items:center;}
+.dots span{width:4px;height:4px;border-radius:50%;background:var(--t3);animation:dot .9s infinite;}
+.dots span:nth-child(2){animation-delay:.18s;}
+.dots span:nth-child(3){animation-delay:.36s;}
+@keyframes dot{0%,80%,100%{transform:scale(.55);opacity:.35;}40%{transform:scale(1);opacity:1;}}
+.qa-drawer{position:absolute;top:0;right:0;bottom:0;width:360px;background:var(--s1);border-left:1px solid var(--b1);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.34,1.1,.64,1);z-index:50;box-shadow:-8px 0 32px rgba(0,0,0,.08);}
+.qa-drawer.open{transform:translateX(0);}
+.qa-header{padding:14px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;}
+.qa-header-left{display:flex;align-items:center;gap:8px;}
+.qa-badge{width:7px;height:7px;border-radius:50%;background:var(--qa);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.qa-title{font-weight:600;font-size:13px;color:var(--t1);}
+.qa-sub{font-size:11px;color:var(--t3);}
+.qa-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--b1);background:transparent;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;}
+.qa-close:hover{background:var(--s2);color:var(--t2);}
+.qa-context-chip{margin:10px 14px 0;padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:7px;font-size:11px;color:var(--t3);display:flex;align-items:center;gap:6px;}
+.qa-context-chip strong{color:var(--t2);}
+.qa-messages{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+.qa-msg{display:flex;gap:8px;animation:fadeUp .2s ease;}
+.qa-msg.user{flex-direction:row-reverse;}
+.qa-msg-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:2px;}
+.qa-msg-av.coach{background:var(--qa-a);border:1.5px solid var(--qa);font-size:12px;}
+.qa-msg-av.user{background:var(--s2);color:var(--t2);border:1px solid var(--b1);}
+.qa-msg-body{max-width:85%;padding:8px 11px;border-radius:10px;font-size:12px;line-height:1.6;}
+.qa-msg.coach .qa-msg-body{background:var(--s2);color:var(--t2);border:1px solid var(--b1);}
+.qa-msg.user .qa-msg-body{background:var(--bb);color:white;}
+.qa-suggested{padding:0 14px 10px;display:flex;flex-direction:column;gap:4px;}
+.qa-suggest-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;}
+.qa-suggest-btn{padding:7px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:7px;font-size:11px;color:var(--t2);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s;line-height:1.4;}
+.qa-suggest-btn:hover{border-color:var(--qa);color:var(--qa);background:var(--qa-a);}
+.qa-input-row{padding:12px 14px;border-top:1px solid var(--b1);display:flex;gap:8px;align-items:flex-end;}
+.qa-inp{flex:1;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:8px 11px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--t1);outline:none;resize:none;min-height:36px;max-height:100px;line-height:1.5;transition:border-color .2s;}
+.qa-inp:focus{border-color:var(--qa);}
+.qa-inp::placeholder{color:var(--t4);}
+.qa-send{width:32px;height:32px;background:var(--qa);border:none;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s;}
+.qa-send:hover{background:#6D28D9;}
+.qa-send:disabled{opacity:.35;cursor:not-allowed;}
+.browser{flex:1;display:flex;flex-direction:column;margin:12px;border:1px solid var(--b2);border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.03);min-height:0;background:var(--cl-bg);}
+.bbar{background:var(--s2);border-bottom:1px solid var(--b1);padding:7px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.bdots{display:flex;gap:5px;align-items:center;}
+.bdot{width:10px;height:10px;border-radius:50%;}
+.bd1{background:#FF5F57;}.bd2{background:#FFBD2E;}.bd3{background:#28C840;}
+.burl{flex:1;background:var(--cl-inp);border:1px solid var(--cl-inp-b);border-radius:6px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);transition:all .3s;}
+.burl.flash{color:var(--t2);}
+.claude{flex:1;display:flex;overflow:hidden;font-family:-apple-system,'DM Sans',sans-serif;}
+.cl-sb{width:220px;background:var(--cl-sb);border-right:1px solid var(--cl-sb-b);display:flex;flex-direction:column;flex-shrink:0;font-size:12px;overflow:hidden;}
+.cl-sb-top{padding:8px 8px 4px;}
+.cl-sb-toprow{display:flex;align-items:center;padding:0 2px;}
+.cl-icon-btn{width:26px;height:26px;border-radius:5px;border:none;background:transparent;color:var(--cl-txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.cl-icon-btn:hover{background:var(--cl-hover);color:var(--cl-txt2);}
+.cl-sb-sec{padding:6px 10px 2px;}
+.cl-sb-lbl{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--cl-txt3);margin-bottom:3px;padding:0 2px;display:flex;align-items:center;gap:4px;}
+.cl-sb-item{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--cl-txt2);transition:all .15s;position:relative;}
+.cl-sb-item:hover{background:var(--cl-hover);}
+.cl-sb-item.active{background:var(--cl-inp);color:var(--cl-txt);font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.cl-sb-item.saved{background:var(--green-b);color:var(--green);font-weight:500;border:1px solid rgba(22,163,74,.15);}
+.cl-sb-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center;}
+.cl-sb-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;}
+.cl-recent{font-size:11px;color:var(--cl-txt3);padding:4px 8px;border-radius:5px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:all .15s;}
+.cl-recent:hover{background:var(--cl-hover);color:var(--cl-txt2);}
+.cl-sb-utils{border-top:1px solid var(--cl-sb-b);padding:4px 0;}
+.cl-sb-account{padding:8px 10px;border-top:1px solid var(--cl-sb-b);display:flex;align-items:center;gap:8px;}
+.cl-sb-avatar{width:26px;height:26px;border-radius:50%;background:var(--cl-accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.cl-sb-account-name{font-size:12px;color:var(--cl-txt2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+.cl-main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--cl-bg);}
+.step-guide{padding:10px 16px 9px;border-bottom:1px solid var(--cl-sb-b);background:var(--cl-inp);flex-shrink:0;display:flex;align-items:center;gap:10px;}
+.step-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--bb);background:var(--bb-b);padding:3px 8px;border-radius:5px;flex-shrink:0;}
+.step-badge-n{background:var(--bb);color:white;width:15px;height:15px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+.step-instr{font-size:12px;color:var(--cl-txt2);flex:1;line-height:1.4;}
+.step-instr strong{color:var(--cl-txt);font-weight:600;}
+.v{flex:1;overflow-y:auto;}
+.v-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;gap:10px;}
+/* Nav bar */
+.nav-bar{padding:10px 16px;border-top:1px solid var(--b1);background:var(--s1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.nav-back{padding:7px 14px;background:transparent;border:1px solid var(--b1);border-radius:8px;font-size:12px;color:var(--t2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.nav-back:hover{background:var(--s2);}
+.nav-next{padding:7px 18px;background:var(--bb);border:none;border-radius:8px;font-size:12px;font-weight:600;color:white;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.nav-next:hover{background:var(--bb2);}
+.nav-next.green{background:var(--green);}
+.nav-next.green:hover{background:#15803D;}
+/* Content cards */
+.info-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.info-chip{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;background:var(--s2);border:1px solid var(--b1);color:var(--t2);}
+.info-chip.bad{background:var(--red-a);border-color:rgba(220,38,38,.15);color:var(--red);}
+.info-chip.good{background:var(--green-b);border-color:rgba(22,163,74,.15);color:var(--green);}
+.quote-card{border-left:3px solid var(--b2);padding:10px 14px;background:var(--s2);border-radius:0 8px 8px 0;margin-bottom:10px;font-size:12px;color:var(--t2);line-height:1.65;font-style:italic;}
+.quote-card.emma{border-left-color:var(--emma);}
+.quote-card.dan{border-left-color:var(--dan);}
+.quote-attr{font-size:10px;font-weight:700;color:var(--t3);margin-top:6px;font-style:normal;letter-spacing:.3px;}
+.quote-attr.emma{color:var(--emma);}
+.quote-attr.dan{color:var(--dan);}
+.action-bar{background:var(--bb-a);border:1px solid rgba(47,123,229,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--bb);font-weight:500;margin-top:8px;}
+/* Anatomy table */
+.anatomy-table{border:1px solid var(--cl-sb-b);border-radius:9px;overflow:hidden;margin-bottom:10px;}
+.anatomy-row{display:flex;border-bottom:1px solid var(--cl-sb-b);}
+.anatomy-row:last-child{border-bottom:none;}
+.anatomy-key{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--bb);background:var(--bb-b);padding:9px 10px;width:68px;flex-shrink:0;display:flex;align-items:center;border-right:1px solid var(--cl-sb-b);line-height:1.3;}
+.anatomy-val{font-size:11px;color:var(--cl-txt2);padding:9px 12px;line-height:1.55;font-family:'JetBrains Mono',monospace;flex:1;}
+/* Compare grid */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.compare-bad{background:var(--red-a);border:1px solid rgba(220,38,38,.12);border-radius:9px;padding:12px;}
+.compare-good{background:var(--green-b);border:1px solid rgba(22,163,74,.15);border-radius:9px;padding:12px;}
+.compare-label{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px;}
+.compare-bad .compare-label{color:var(--red);}
+.compare-good .compare-label{color:var(--green);}
+.compare-text{font-size:11px;color:var(--cl-txt2);line-height:1.65;}
+/* Builder form */
+.builder-form{padding:16px;display:flex;flex-direction:column;gap:12px;}
+.builder-label{font-size:11px;font-weight:600;color:var(--cl-txt2);margin-bottom:5px;letter-spacing:.1px;}
+.builder-row{display:flex;gap:8px;flex-wrap:wrap;}
+.platform-btn{padding:6px 13px;border:1px solid var(--cl-inp-b);border-radius:7px;font-size:11px;font-weight:500;background:var(--cl-inp);color:var(--cl-txt2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.platform-btn:hover{border-color:var(--bb);color:var(--bb);}
+.platform-btn.sel{background:var(--bb-a);border-color:var(--bb);color:var(--bb);font-weight:700;}
+.hook-btn{padding:6px 11px;border:1px solid var(--cl-inp-b);border-radius:7px;font-size:11px;background:var(--cl-inp);color:var(--cl-txt2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.hook-btn:hover{border-color:var(--bb);color:var(--bb);}
+.hook-btn.sel{background:var(--bb-a);border-color:var(--bb);color:var(--bb);font-weight:600;}
+.cl-textarea{width:100%;background:var(--cl-inp);border:1px solid var(--cl-inp-b);border-radius:8px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--cl-txt);outline:none;min-height:72px;resize:none;line-height:1.6;transition:all .2s;}
+.cl-textarea:focus{border-color:var(--bb);box-shadow:0 0 0 3px var(--bb-a);}
+.cl-textarea::placeholder{color:var(--cl-txt3);}
+.gen-btn{padding:9px 18px;background:var(--bb);border:none;border-radius:8px;font-size:12px;font-weight:600;color:white;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;align-self:flex-start;}
+.gen-btn:hover{background:var(--bb2);}
+.gen-btn:disabled{opacity:.45;cursor:not-allowed;}
+.gen-output{background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;padding:14px;font-size:12px;color:var(--cl-txt2);line-height:1.75;min-height:60px;}
+/* Prompt cards */
+.prompt-card{background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;position:relative;}
+.prompt-card:hover{border-color:var(--cl-accent);box-shadow:0 2px 8px rgba(47,123,229,.10);}
+.prompt-card-role{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--cl-accent);margin-bottom:4px;}
+.prompt-card-text{font-size:11px;color:var(--cl-txt);line-height:1.55;font-family:'JetBrains Mono',monospace;}
+.prompt-card-copy{position:absolute;top:10px;right:10px;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;background:var(--bb-a);color:var(--bb);border:none;cursor:pointer;opacity:0;transition:opacity .15s;font-family:'DM Sans',sans-serif;}
+.prompt-card:hover .prompt-card-copy{opacity:1;}
+.prompt-card-copy.copied{background:var(--green-a);color:var(--green);}
+/* Checklist */
+.check-item{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;margin-bottom:7px;cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:var(--bb);}
+.check-item.done{background:var(--green-b);border-color:rgba(22,163,74,.2);}
+.check-box{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all .2s;}
+.check-item.done .check-box{background:var(--green);border-color:var(--green);color:white;}
+.check-text{font-size:12px;color:var(--cl-txt2);flex:1;line-height:1.4;}
+.check-item.done .check-text{color:var(--green);text-decoration:line-through;text-decoration-color:rgba(22,163,74,.4);}
+/* Model cards */
+.model-card{background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:10px;padding:13px 15px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+.model-card.rec{background:var(--bb-b);border-color:rgba(47,123,229,.2);}
+.model-badge{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;}
+.model-card.rec .model-badge{background:var(--bb);color:white;}
+.model-card:not(.rec) .model-badge{background:var(--s3);color:var(--t3);}
+.model-name{font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:3px;font-family:'JetBrains Mono',monospace;}
+.model-desc{font-size:11px;color:var(--cl-txt3);line-height:1.5;}
+/* Repurpose table */
+.repurpose-table{border:1px solid var(--cl-sb-b);border-radius:9px;overflow:hidden;margin-bottom:10px;}
+.repurpose-row{display:grid;grid-template-columns:100px 1fr;border-bottom:1px solid var(--cl-sb-b);}
+.repurpose-row:last-child{border-bottom:none;}
+.repurpose-row.header{background:var(--s2);}
+.repurpose-key{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--t3);padding:8px 10px;border-right:1px solid var(--cl-sb-b);display:flex;align-items:center;background:var(--s2);}
+.repurpose-val{font-size:11px;color:var(--cl-txt2);padding:8px 12px;line-height:1.5;}
+/* Edit steps */
+.edit-step{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;margin-bottom:7px;}
+.edit-num{width:22px;height:22px;border-radius:50%;background:var(--bb-a);border:1.5px solid var(--bb);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--bb);flex-shrink:0;margin-top:1px;}
+.edit-body{flex:1;}
+.edit-title{font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:3px;}
+.edit-sub{font-size:11px;color:var(--cl-txt3);line-height:1.5;}
+/* Capstone checklist */
+.cap-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--green-b);border:1px solid rgba(22,163,74,.15);border-radius:9px;margin-bottom:7px;}
+.cap-check{font-size:14px;}
+.cap-text{font-size:12px;color:var(--green);font-weight:500;}
+/* Prompt filter */
+.prompt-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.filter-btn{padding:5px 11px;border:1px solid var(--b1);border-radius:12px;font-size:11px;font-weight:500;background:var(--s2);color:var(--t2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.filter-btn:hover{border-color:var(--bb);color:var(--bb);}
+.filter-btn.active{background:var(--bb);color:white;border-color:var(--bb);}
+.prompt-card-why{font-size:10px;color:var(--t3);margin-bottom:5px;font-style:italic;line-height:1.4;}
+.meta-rule{background:var(--bb-b);border:1px solid rgba(47,123,229,.15);border-radius:9px;padding:12px 14px;margin-bottom:14px;}
+.meta-rule-label{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--bb);margin-bottom:5px;}
+.meta-rule-text{font-size:12px;color:var(--t2);line-height:1.6;}
+/* Example pills */
+.example-pill{padding:4px 9px;border:1px solid var(--b1);border-radius:12px;font-size:10px;font-weight:500;background:var(--s2);color:var(--t2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.example-pill:hover{border-color:var(--bb);color:var(--bb);background:var(--bb-a);}
+.copy-output-btn{padding:4px 10px;border-radius:5px;font-size:10px;font-weight:600;background:var(--bb-a);color:var(--bb);border:1px solid rgba(47,123,229,.2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.copy-output-btn:hover{background:var(--bb-b);}
+.copy-output-btn.copied{background:var(--green-a);color:var(--green);border-color:rgba(22,163,74,.2);}
+/* Helpers */
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.hidden{display:none!important;}
+.fade{animation:fadeUp .22s ease;}
+.hl{outline:2px solid var(--bb);outline-offset:3px;border-radius:6px;}
+.callout{position:fixed;z-index:999;background:var(--t1);color:white;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.25);}
+.pulse{position:absolute;inset:-4px;border-radius:inherit;border:2px solid var(--bb);animation:pulseRing 1.2s infinite;pointer-events:none;}
+@keyframes pulseRing{0%{opacity:.8;transform:scale(1);}100%{opacity:0;transform:scale(1.12);}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">🐦</div>
+    <span class="tb-brand">Bluebird Academy</span>
+    <div class="tb-divider"></div>
+    <span class="tb-crumb">Claude for Content Creation</span>
+  </div>
+  <div class="tb-right">
+    <div class="pips" id="pips"></div>
+    <span class="pip-label" id="pipLabel">1 / 11</span>
+  </div>
+</div>
+
+<div class="body">
+
+<div class="sidebar">
+  <div class="sb-head">
+    <div class="sb-head-title">Walkthrough</div>
+    <div class="sb-head-sub">Click any step to jump</div>
+  </div>
+  <div class="sb-steps" id="sbSteps"></div>
+  <div class="sb-qa-section">
+    <div class="sb-qa-title">💬 Your Questions</div>
+    <div id="qaHistory"><div class="sb-qa-empty">No questions yet</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="coach">
+    <div class="coach-av emma" id="coachAv">👩</div>
+    <div class="coach-who emma" id="coachWho">Emma</div>
+    <div class="coach-line" id="coachLine"><div class="dots"><span></span><span></span><span></span></div></div>
+    <button class="ask-btn" onclick="openQA()">💬 Ask a question</button>
+  </div>
+
+  <div class="browser">
+    <div class="bbar">
+      <div class="bdots"><div class="bdot bd1"></div><div class="bdot bd2"></div><div class="bdot bd3"></div></div>
+      <div class="burl" id="burl">claude.ai</div>
+    </div>
+    <div class="claude">
+
+      <!-- Claude sidebar -->
+      <div class="cl-sb">
+        <div class="cl-sb-top">
+          <div class="cl-sb-toprow">
+            <button class="cl-icon-btn"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 3v18"/></svg></button>
+            <div style="flex:1"></div>
+            <button class="cl-icon-btn"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
+          </div>
+        </div>
+        <div class="cl-sb-sec">
+          <div class="cl-sb-lbl">Projects</div>
+          <div class="cl-sb-item active" id="ci-content">
+            <span class="cl-sb-icon">✍️</span>
+            <span class="cl-sb-text">Bluebird Content</span>
+          </div>
+        </div>
+        <div class="cl-sb-sec" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;">
+          <div class="cl-sb-lbl">Recents</div>
+          <div style="overflow-y:auto;flex:1;">
+            <div class="cl-recent">LinkedIn post — this week</div>
+            <div class="cl-recent">Caption batch Sunday</div>
+            <div class="cl-recent">TikTok hook ideas</div>
+            <div class="cl-recent">Repurpose last week's post</div>
+            <div class="cl-recent">Instagram carousel copy</div>
+          </div>
+        </div>
+        <div class="cl-sb-utils">
+          <div class="cl-sb-item"><span class="cl-sb-icon"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="cl-sb-text">Customize Claude</span></div>
+        </div>
+        <div class="cl-sb-account">
+          <div class="cl-sb-avatar">E</div>
+          <div class="cl-sb-account-name">Emma Freeman</div>
+        </div>
+      </div>
+
+      <div class="cl-main">
+        <div class="step-guide" id="stepGuide">
+          <div class="step-badge"><div class="step-badge-n" id="stepNum">→</div><span id="stepTitle">Welcome</span></div>
+          <div class="step-instr" id="stepInstr">Let's build your content system.</div>
+        </div>
+
+        <!-- vIntro -->
+        <div class="v fade" id="vIntro">
+          <div style="padding:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <div style="font-size:36px;">✍️</div>
+              <div>
+                <div style="font-weight:700;font-size:16px;color:var(--cl-txt);margin-bottom:3px;">Claude for Content Creation</div>
+                <div style="font-size:11px;color:var(--cl-txt3);">9 steps · ~35 minutes · hands-on walkthrough</div>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.75;margin-bottom:20px;">
+              AI-generated content sounds generic because Claude doesn\'t know who you are. <strong style="color:var(--cl-txt);">This module fixes that permanently</strong> — brand voice doc, caption formula, live builder, prompt library, and a repeatable batch system that runs every week in 30 minutes.
+            </div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--cl-txt3);margin-bottom:10px;">What you'll build</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;"><div style="font-size:18px;">📄</div><div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A brand voice doc Claude always has</div><div style="font-size:11px;color:var(--cl-txt3);">Set it once — every caption starts from your voice</div></div></div>
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;"><div style="font-size:18px;">⚡</div><div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A live caption builder</div><div style="font-size:11px;color:var(--cl-txt3);">Platform + hook + raw idea = caption in 10 seconds</div></div></div>
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;"><div style="font-size:18px;">📚</div><div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A ready-to-use prompt library</div><div style="font-size:11px;color:var(--cl-txt3);">The exact prompts Emma uses every week</div></div></div>
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;"><div style="font-size:18px;">🔄</div><div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A weekly batch system</div><div style="font-size:11px;color:var(--cl-txt3);">30 minutes Sunday = full week of content</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- vGeneric -->
+        <div class="v hidden" id="vGeneric">
+          <div style="padding:16px;">
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.7;margin-bottom:12px;">Watch what happens when you ask Claude for a caption with zero context vs. with your voice loaded. Same prompt. Completely different output.</div>
+
+            <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">Try it — type a topic below</div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:flex-end;">
+              <textarea class="cl-textarea" id="genericTopic" placeholder="e.g. I saved 3 hours this week using AI" rows="2" style="min-height:48px;flex:1;"></textarea>
+              <button class="gen-btn" id="genericBtn" onclick="runBeforeAfter()" style="flex-shrink:0;padding:9px 14px;">Compare →</button>
+            </div>
+            <div id="beforeAfterResult" class="hidden">
+              <div class="compare-grid">
+                <div class="compare-bad">
+                  <div class="compare-label">❌ No context (what you have now)</div>
+                  <div class="compare-text" id="beforeText"><div class="dots"><span></span><span></span><span></span></div></div>
+                </div>
+                <div class="compare-good">
+                  <div class="compare-label">✅ Voice loaded (what you'll have)</div>
+                  <div class="compare-text" id="afterText"><div class="dots"><span></span><span></span><span></span></div></div>
+                </div>
+              </div>
+              <div id="genericInsight" class="hidden" style="margin-top:4px;font-size:11px;color:var(--t3);line-height:1.6;padding:0 2px;"></div>
+            </div>
+            <div class="quote-card dan" style="margin-top:10px;"><em>"Most people are working from the same default prompts with no context loaded. Claude doesn\'t know who you are — so it writes for everyone, which means it writes for no one."</em><div class="quote-attr dan">Dan Guilfoil · Bluebird Co-founder</div></div>
+          </div>
+        </div>
+
+        <!-- vVoiceDoc -->
+        <div class="v hidden" id="vVoiceDoc">
+          <div style="padding:16px;">
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.7;margin-bottom:14px;">Your brand voice doc goes into your Claude Project instructions. Add it once — every conversation in that project already knows who you are.</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">Our Bluebird voice doc (watch it load)</div>
+            <div style="background:var(--cl-inp);border:1px solid var(--cl-inp-b);border-radius:8px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cl-txt2);min-height:80px;line-height:1.7;white-space:pre-wrap;" id="voiceDocText"></div>
+            <div style="margin-top:10px;">
+              <div class="quote-card emma"><em>"Confident but real. I swear occasionally. I hate fluffy intros. Busy humans who want the shortcut, not the lecture."</em><div class="quote-attr emma">Emma Freeman · Bluebird Co-founder</div></div>
+              <div class="quote-card dan"><em>"Once the brand voice doc was in, it stopped sounding like AI wrote it. It started sounding like us."</em><div class="quote-attr dan">Dan Guilfoil · Bluebird Co-founder</div></div>
+            </div>
+            <div class="action-bar">Open your Claude content Project → Settings → paste your voice doc into Project Instructions.</div>
+          </div>
+        </div>
+
+        <!-- vAnatomy -->
+        <div class="v hidden" id="vAnatomy">
+          <div style="padding:16px;">
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.7;margin-bottom:14px;">Most people write the body first and slap a weak opener on it. That's backwards. Line 1 is 80% of the work.</div>
+            <div class="anatomy-table">
+              <div class="anatomy-row"><div class="anatomy-key">Hook</div><div class="anatomy-val">Weird, specific, uncomfortable. Makes them stop. This is your only job on line 1.</div></div>
+              <div class="anatomy-row"><div class="anatomy-key">Body</div><div class="anatomy-val">Value or story. Makes them care. Keep it tight — every sentence earns its place.</div></div>
+              <div class="anatomy-row"><div class="anatomy-key">Close</div><div class="anatomy-val">Question or CTA. Makes them act. One thing only — never two asks.</div></div>
+            </div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;margin-top:4px;">Delete these on sight</div>
+            <div class="info-row">
+              <div class="info-chip bad">"In today's world"</div>
+              <div class="info-chip bad">"Game-changer"</div>
+              <div class="info-chip bad">"Let's dive in"</div>
+              <div class="info-chip bad">"Delve into"</div>
+            </div>
+            <div class="quote-card dan"><em>"Most captions are written from the inside out — what you want to say instead of what stops someone mid-scroll. If it doesn\'t connect in the first line, it's already lost."</em><div class="quote-attr dan">Dan Guilfoil · Bluebird Co-founder</div></div>
+          </div>
+        </div>
+
+        <!-- vBuilder -->
+        <div class="v hidden" id="vBuilder">
+          <div class="builder-form">
+            <div>
+              <div class="builder-label">Platform</div>
+              <div class="builder-row" id="platformRow">
+                <button class="platform-btn" onclick="selPlatform(this,'LinkedIn')">💼 LinkedIn</button>
+                <button class="platform-btn" onclick="selPlatform(this,'Instagram')">📸 Instagram</button>
+                <button class="platform-btn" onclick="selPlatform(this,'TikTok')">🎵 TikTok</button>
+              </div>
+            </div>
+            <div>
+              <div class="builder-label">Hook type</div>
+              <div class="builder-row" id="hookRow">
+                <button class="hook-btn" onclick="selHook(this,'curiosity')">Curiosity</button>
+                <button class="hook-btn" onclick="selHook(this,'contrast')">Contrast</button>
+                <button class="hook-btn" onclick="selHook(this,'stat')">Stat</button>
+                <button class="hook-btn" onclick="selHook(this,'question')">Question</button>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+                <div class="builder-label" style="margin-bottom:0;">Your raw idea</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span id="exPills"></span>
+                </div>
+              </div>
+              <textarea class="cl-textarea" id="rawIdea" placeholder="Drop your messy thought here — or tap an example above to try a real Bluebird idea." rows="3"></textarea>
+            </div>
+            <button class="gen-btn" id="genBtn" onclick="generateCaption()">⚡ Generate caption</button>
+            <div id="genOutput" class="hidden">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+                <div class="builder-label" style="margin-bottom:0;">Generated caption</div>
+                <button class="copy-output-btn" id="copyOutputBtn" onclick="copyOutput()">Copy</button>
+              </div>
+              <div class="gen-output" id="genText"><div class="dots"><span></span><span></span><span></span></div></div>
+              <div id="editNudge" class="hidden" style="margin-top:8px;padding:10px 13px;background:var(--yellow-a,rgba(217,119,6,0.07));border:1px solid rgba(217,119,6,0.18);border-radius:8px;font-size:11px;color:var(--yellow);line-height:1.6;"><strong>Your 90-second edit:</strong> Read it out loud. Find the most generic sentence. Replace it with something only you would know. Cut any AI-isms. Done.</div>
+              <div class="quote-card emma" style="margin-top:10px;"><em>"I'll grab something that's already getting traction, throw in my take, and the builder turns it into a caption with a hook that actually stops people. It does in 30 seconds what used to take me 20 minutes."</em><div class="quote-attr emma">Emma Freeman · Bluebird Co-founder</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- vRepurpose -->
+        <div class="v hidden" id="vRepurpose">
+          <div style="padding:16px;">
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.7;margin-bottom:14px;">Capture ideas when they happen. Batch-process them once a week. One raw idea → five platform-specific pieces in 30 minutes.</div>
+            <div class="repurpose-table">
+              <div class="repurpose-row header"><div class="repurpose-key">Platform</div><div class="repurpose-val" style="font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--t3);padding:8px 12px;">What it needs</div></div>
+              <div class="repurpose-row"><div class="repurpose-key">LinkedIn</div><div class="repurpose-val">Hook + insight + question. Longer is fine. Professional but human.</div></div>
+              <div class="repurpose-row"><div class="repurpose-key">Instagram</div><div class="repurpose-val">Story-driven. First line must hook. Emoji OK. Conversational.</div></div>
+              <div class="repurpose-row"><div class="repurpose-key">TikTok</div><div class="repurpose-val">Ultra-short. First 2 seconds = everything. Punchy, fast, specific.</div></div>
+              <div class="repurpose-row"><div class="repurpose-key">Substack</div><div class="repurpose-val">Expand into a full take. Conversational essay. 200–400 words.</div></div>
+              <div class="repurpose-row"><div class="repurpose-key">Email</div><div class="repurpose-val">Subject line = hook. Short body. One clear CTA. No fluff.</div></div>
+            </div>
+            <div class="quote-card emma"><em>"I used to write one caption and post it everywhere. Claude showed me that LinkedIn, Instagram, and TikTok are completely different audiences — now one idea becomes five pieces of content that actually fit where they're landing."</em><div class="quote-attr emma">Emma Freeman · Bluebird Co-founder</div></div>
+            <div class="action-bar">Block a recurring 30-min Sunday slot on your calendar for content batching.</div>
+          </div>
+        </div>
+
+        <!-- vPrompts -->
+        <div class="v hidden" id="vPrompts">
+          <div style="padding:16px;">
+            <div class="meta-rule">
+              <div class="meta-rule-label">📌 The Meta Rule</div>
+              <div class="meta-rule-text">Nobody generates fresh content from scratch for every platform. Start with one high-effort piece, then use AI to strip-mine it across formats. And always — <strong>paste a paragraph of your own writing into every prompt and tell Claude to match that tone.</strong> That single habit is the difference.</div>
+            </div>
+            <div class="quote-card emma"><em>"Every prompt I build follows the same framework — Role, Context, Task, Format — and always ends with asking Claude to ask clarifying questions before it starts. That one habit alone made my outputs 10x more useful."</em><div class="quote-attr emma">Emma Freeman · Bluebird Co-founder</div></div>
+            <div class="prompt-filter" id="promptFilter">
+              <button class="filter-btn active" onclick="filterPrompts('all',this)">All (10)</button>
+              <button class="filter-btn" onclick="filterPrompts('voice',this)">Voice</button>
+              <button class="filter-btn" onclick="filterPrompts('caption',this)">Caption</button>
+              <button class="filter-btn" onclick="filterPrompts('hook',this)">Hook</button>
+              <button class="filter-btn" onclick="filterPrompts('repurpose',this)">Repurpose</button>
+              <button class="filter-btn" onclick="filterPrompts('edit',this)">Edit</button>
+              <button class="filter-btn" onclick="filterPrompts('strategy',this)">Strategy</button>
+            </div>
+            <div id="promptCards"></div>
+          </div>
+        </div>
+
+        <!-- vEditing -->
+        <div class="v hidden" id="vEditing">
+          <div style="padding:16px;">
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.7;margin-bottom:12px;">Claude gets you 80% there. The editing loop is how you close the gap — and Claude can do most of it for you. Here's the exact workflow.</div>
+
+            <!-- Stage 1: The raw draft -->
+            <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;">Step 1 — Paste your raw Claude output</div>
+            <textarea id="editDraft" class="cl-textarea" rows="4" style="min-height:90px;font-family:'DM Sans',sans-serif;font-size:12px;" placeholder="Paste the caption Claude just gave you — or use the example below.">In today's fast-paced world of AI and automation, leveraging cutting-edge technology can truly be a game-changer for your business growth journey. We recently discovered a revolutionary approach that has helped us delve deeper into our creative process. Let's dive in!</textarea>
+            <div style="margin-top:6px;display:flex;gap:8px;align-items:center;">
+              <button class="gen-btn" id="editBtn" onclick="runEditLoop()" style="font-size:11px;padding:7px 14px;">⚡ Ask Claude to edit it</button>
+              <span style="font-size:11px;color:var(--t3);">Claude applies the editing loop automatically</span>
+            </div>
+
+            <!-- Stage 2: Result -->
+            <div id="editResult" class="hidden" style="margin-top:12px;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;">Step 2 — Claude returns the cleaned version</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:.3px;text-transform:uppercase;margin-bottom:5px;">Before (raw output)</div>
+                  <div id="editBefore" style="background:var(--red-a);border:1px solid rgba(220,38,38,.12);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--cl-txt2);line-height:1.65;"></div>
+                </div>
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:.3px;text-transform:uppercase;margin-bottom:5px;">After (edited by Claude)</div>
+                  <div id="editAfter" style="background:var(--green-b);border:1px solid rgba(22,163,74,.15);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--cl-txt2);line-height:1.65;"></div>
+                </div>
+              </div>
+              <!-- Stage 3: The prompt they can copy -->
+              <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;">Step 3 — Save this prompt. Use it every time.</div>
+              <div style="position:relative;">
+                <div style="background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;padding:11px 13px;font-size:11px;color:var(--cl-txt2);line-height:1.7;font-family:'JetBrains Mono',monospace;" id="editPromptDisplay">Edit this caption like you hate mediocrity. Cut every word that isn't doing work. Remove all AI-isms: "game-changer", "let's dive in", "delve", "in today's world", "revolutionary", "leverage", "fast-paced". Replace the most generic sentence with something specific — a real number, a real moment, or an actual opinion. Keep the hook. One close only. Return just the edited caption, no explanation.<br><br>[paste caption]</div>
+                <button class="prompt-card-copy" style="opacity:1;top:8px;right:8px;" onclick="copyEditPrompt(this)">Copy</button>
+              </div>
+            </div>
+
+            <div class="quote-card dan" style="margin-top:12px;"><em>"Once our brand voice doc was in, the editing loop got really short. Claude gets it 90% right — we are just tweaking a word or two, not rewriting the whole thing."</em><div class="quote-attr dan">Dan Guilfoil · Bluebird Co-founder</div></div>
+          </div>
+        </div>
+
+        <!-- vModel -->
+        <div class="v hidden" id="vModel">
+          <div style="padding:16px;">
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.7;margin-bottom:14px;">For content creation, model choice matters. Here's exactly which one to use and why.</div>
+            <div class="model-card rec">
+              <div class="model-badge">✅ Use this</div>
+              <div><div class="model-name">claude-sonnet-4-20250514</div><div class="model-desc">Best voice-matching. Fast enough for real-time drafting. Significantly better creative quality than Haiku. This is your default for all content work.</div></div>
+            </div>
+            <div class="model-card">
+              <div class="model-badge">Skip</div>
+              <div><div class="model-name">claude-opus-4</div><div class="model-desc">More powerful but slower and more expensive. Overkill for captions and social copy. Save it for deep strategic work.</div></div>
+            </div>
+            <div class="model-card">
+              <div class="model-badge">Skip</div>
+              <div><div class="model-name">claude-haiku-4-5</div><div class="model-desc">Fastest and cheapest but noticeably weaker at voice-matching. The quality difference shows in content.</div></div>
+            </div>
+            <div class="quote-card dan"><em>"Honestly, once we landed on Sonnet, we stopped shopping around. It handles everything we throw at it for content. That said, AI changes daily — so we'll update this when something better comes along."</em><div class="quote-attr dan">Dan Guilfoil · Bluebird Co-founder</div></div>
+          </div>
+        </div>
+
+        <!-- vCapstone -->
+        <div class="v hidden" id="vCapstone">
+          <div style="padding:16px;">
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.7;margin-bottom:14px;">Everything from this module connects into one repeatable workflow that takes 30 minutes and runs like clockwork. Check off what you've completed.</div>
+            <div class="check-item" id="cap1" onclick="toggleCap('cap1')"><div class="check-box" id="capBox1"></div><div class="check-text">Brand voice doc loaded into Claude Project</div></div>
+            <div class="check-item" id="cap2" onclick="toggleCap('cap2')"><div class="check-box" id="capBox2"></div><div class="check-text">Caption formula (hook / body / close) memorized</div></div>
+            <div class="check-item" id="cap3" onclick="toggleCap('cap3')"><div class="check-box" id="capBox3"></div><div class="check-text">Prompt library saved in your Claude Project</div></div>
+            <div class="check-item" id="cap4" onclick="toggleCap('cap4')"><div class="check-box" id="capBox4"></div><div class="check-text">30-min Sunday batch slot on your calendar</div></div>
+            <div class="check-item" id="cap5" onclick="toggleCap('cap5')"><div class="check-box" id="capBox5"></div><div class="check-text">Editing loop practiced at least once</div></div>
+            <div class="quote-card emma" style="margin-top:4px;"><em>"It's basically meal prep for content. You do the heavy lifting in one focused session — scripts, captions, all of it — and the rest of the week you're just executing. No scrambling, no last-minute posting. It's all on the calendar, ready to go."</em><div class="quote-attr emma">Emma Freeman · Bluebird Co-founder</div></div>
+          </div>
+        </div>
+
+        <!-- vComplete -->
+        <div class="v hidden" id="vComplete">
+          <div style="padding:20px;">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+              <div style="font-weight:700;font-size:16px;color:var(--cl-txt);margin-bottom:6px;">Content machine: live.</div>
+              <div style="font-size:12px;color:var(--cl-txt3);">Module 3 complete · Next: M4 — ChatGPT Custom GPTs</div>
+            </div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--cl-txt3);margin-bottom:10px;">Your prompt starter pack</div>
+            <div id="completePromptCards"></div>
+          </div>
+        </div>
+
+      </div><!-- cl-main -->
+    </div><!-- claude -->
+  </div><!-- browser -->
+
+  <div class="nav-bar">
+    <button class="nav-back hidden" id="navBack">← Back</button>
+    <button class="nav-next hidden" id="navNext">Continue →</button>
+  </div>
+
+  <!-- Q&A Drawer -->
+  <div class="qa-drawer" id="qaDrawer">
+    <div class="qa-header">
+      <div class="qa-header-left"><div class="qa-badge"></div><div><div class="qa-title">Ask a Question</div><div class="qa-sub">Answered by your Bluebird coaches</div></div></div>
+      <button class="qa-close" onclick="closeQA()">✕</button>
+    </div>
+    <div class="qa-context-chip"><span>📍</span><span>Asking about: <strong id="qaChipText">Welcome</strong></span></div>
+    <div class="qa-suggested" id="qaSuggested"><div class="qa-suggest-label">Suggested questions</div></div>
+    <div class="qa-messages" id="qaMessages"></div>
+    <div class="qa-input-row">
+      <textarea class="qa-inp" id="qaInp" placeholder="Ask anything about this step…" rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendQuestion();}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+      <button class="qa-send" id="qaSendBtn" onclick="sendQuestion()">
+        <svg width="13" height="13" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div><!-- main -->
+</div><!-- body -->
+</div><!-- shell -->
+
+<script>
+/* ── API PROXY ── All Claude calls route through /api/claude to avoid CORS */
+const API_URL='/api/claude';
+async function callClaude(payload){
+  const resp=await fetch(API_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  if(!resp.ok){
+    const err=await resp.json().catch(()=>({error:{message:'HTTP '+resp.status}}));
+    throw new Error(err?.error?.message||'API error '+resp.status);
+  }
+  return resp.json();
+}
+
+const PROMPTS=[
+  {tag:'voice',role:'The Voice Match',why:'#1 upgrade — treat the first output as a draft, not a deliverable.',text:'Here are 3 samples of my writing: [paste 3 short samples].\n\nNow rewrite this draft in my exact voice — same rhythm, same vocabulary, same level of formality:\n\n[paste draft]'},
+  {tag:'repurpose',role:'The Content Multiplier',why:'One creator cut production time 70% using this as her baseline.',text:'I have the following [blog post / video script / voice note transcript]:\n\n[paste content]\n\nRepurpose it into:\n- 1 LinkedIn thought-leadership post\n- 2 Instagram captions (one educational, one storytelling)\n- 1 TikTok hook script under 10 seconds\n- 1 email newsletter intro\n\nMaintain my voice and key insights. Adapt format, length, and tone for each platform.'},
+  {tag:'edit',role:'The Brutal Editor',why:'The best edit prompt we\'ve found. No softening, no hedging.',text:'Edit this like you hate mediocrity. Cut every word that isn\'t doing work. Flag anything vague, passive, or clichéd. Don\'t soften the feedback.\n\n[paste your draft]'},
+  {tag:'hook',role:'The Anti-Guru Thread',why:'"Avoid motivational fluff" is what separates good outputs from generic ones.',text:'Write a LinkedIn post about [topic].\n\nStructure:\n- Bold, counterintuitive opening hook\n- Personal story or credible example\n- 3–5 actionable insights (each should stand alone as valuable)\n- Closing that invites conversation\n\nVoice: opinionated, experienced, slightly contrarian. Avoid motivational fluff. Write like someone who\'s actually done this, not someone who read about it.'},
+  {tag:'hook',role:'The Hook Generator',why:'Pair both prompts together — the second one is the real unlock.',text:'Generate 5 scroll-stopping hooks for a [topic] post targeting [your audience] on [platform].\n\nThen: here\'s my current best hook: [paste hook]. Give me 10 more variations — mix clear promises with curiosity gaps. Increase click-through, keep the meaning.'},
+  {tag:'caption',role:'The LinkedIn Reframe',why:'The "no bullet-point listicles" instruction changes everything.',text:'Rewrite this for LinkedIn. Make it personal without being cringe. Lead with a story or observation, not a lesson. No bullet-point listicles. No "I\'m excited to share" opener.\n\n[paste your content]'},
+  {tag:'caption',role:'The Instagram Caption Pack',why:'Five tones in one prompt — great for testing what resonates with your audience.',text:'Write 5 Instagram captions for [topic or describe the image/video].\n\nEach should have a different emotional tone:\n1. Curious\n2. Inspiring\n3. Funny / self-aware\n4. Direct / no-fluff\n5. Reflective\n\nInclude 3–5 hashtag suggestions per caption.'},
+  {tag:'hook',role:'The Contrarian Hook',why:'Bold statement → challenge conventional wisdom → hint at proof. Repeatable formula.',text:'Write a hook for [topic] using this structure:\n\n1. Bold, counterintuitive statement (what people think is wrong)\n2. One sentence that challenges the conventional wisdom\n3. One sentence that hints at the real answer or proof\n\nMake it feel like something only someone who\'s actually tried this would say. No hyperbole.'},
+  {tag:'strategy',role:'The Content Strategist Audit',why:'Paste your last 10 posts and let Claude find the pattern you\'re missing.',text:'Act as a content strategist for [your niche/industry].\n\nHere are my last 10 posts:\n[paste posts]\n\nTell me:\n1. What\'s working (and why)\n2. What\'s not (and why)\n3. What I should be posting more of to grow in 2026\n4. One content format I\'m not using that I should be\n\nBe direct. Don\'t soften it.'},
+  {tag:'repurpose',role:'The Weekly Batch System',why:'This is the whole engine — one Sunday session, full week covered.',text:'I\'m doing my weekly content batch. Here are my raw ideas for this week:\n\n1. [idea]\n2. [idea]\n3. [idea]\n4. [idea]\n5. [idea]\n\nFor each idea, write:\n- A LinkedIn post (hook + insight + question close)\n- A TikTok/Reels hook (first 2 seconds, under 15 words)\n- An Instagram caption (story-style, under 150 words)\n\nMy voice: [paste 2 sentences from your best post]. Match that.'},
+];
+
+const STEPS=[
+  {who:'emma',line:'We built this because our AI content kept sounding like everyone else\'s. 👩',num:'→',title:'What You\'ll Build',instr:'',isIntro:true,suggest:['How long does this module take?','Do I need a paid Claude plan?','Will this work for any industry?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'dan',line:'Generic output is a context problem, not a Claude problem. 👨',num:'1',title:'Why AI Content Sounds Generic',instr:'See the <strong>before/after</strong> and understand exactly what\'s causing it.',suggest:['Why does Claude default to generic?','Is this fixable for any voice?','How long has this been a problem?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'emma',line:'This single doc changed everything about how we create content. 👩',num:'2',title:'Build Your Brand Voice Doc',instr:'Watch our <strong>brand voice doc</strong> load — then build yours.',suggest:['What goes in a brand voice doc?','How long should it be?','Can I update it later?'],url:'claude.ai/projects/bluebird-content/settings'},
+  {who:'dan',line:'Line 1 is 80% of the work. Everything else is just supporting it. 👨',num:'3',title:'Anatomy of a Caption',instr:'Learn the <strong>hook / body / close</strong> formula.',suggest:['What makes a good hook?','Does this work for B2B content?','How long should captions be?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'emma',line:'Watch what happens when Claude already knows your voice. 👩',num:'4',title:'The Live Caption Builder',instr:'Pick your <strong>platform</strong>, choose a <strong>hook type</strong>, paste your idea, generate.',suggest:['Can I edit the output?','What if I don\'t like the hook?','How do I save a good caption?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'emma',line:'One Sunday morning changed how I think about content forever. 👩',num:'5',title:'One Idea → Five Pieces',instr:'See how one raw idea becomes a <strong>full week of content</strong>.',suggest:['How do I come up with ideas?','Does repurposing feel repetitive to followers?','What if my platforms have different audiences?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'emma',line:'These are the exact prompts I use. No gatekeeping. 👩',num:'6',title:'The Bluebird Prompt Library',instr:'<strong>Copy any prompt</strong> — paste it straight into your Claude content Project.',suggest:['What is the RCTF framework?','Can I customize these?','How often should I update prompts?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'dan',line:'Claude gets you 80% there. Your 20% is what makes it yours. 👨',num:'7',title:'The Editing Loop',instr:'Learn the <strong>4-step edit</strong> that makes AI content sound human.',suggest:['How long should editing take?','What\'s the most common AI-ism to cut?','When do I know it\'s done?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'dan',line:'Stop second-guessing. One model. Stick with it. 👨',num:'8',title:'Which Model to Use',instr:'See exactly <strong>which Claude model</strong> to set for content and why.',suggest:['Will this change over time?','What\'s the difference between Sonnet and Opus?','Does model choice affect voice quality?'],url:'claude.ai/projects/bluebird-content/settings'},
+  {who:'emma',line:'This is the whole system. Everything connects here. 👩',num:'9',title:'Your Content Machine',instr:'Check off what you\'ve completed. Then go batch your first week.',suggest:['What if I miss a week?','Can I automate parts of this?','How do I know the system is working?'],url:'claude.ai/projects/bluebird-content'},
+  {who:'emma',line:'The content machine is live. Your audience won\'t know what hit them. 🎉',num:'✓',title:'Module Complete',instr:'',isIntro:true,suggest:[],url:'claude.ai/projects/bluebird-content'},
+];
+
+let cur=0,qaOpen=false,qaHistory=[];
+let selPlatformVal='',selHookVal='';
+
+const SYS='You are a teaching assistant for Bluebird Academy by Emma Freeman and Dan Guilfoil — married co-founders of Bluebird Automation with a toddler and a newborn, building in public. Emma is a B2B sales rep who creates content for LinkedIn, Instagram, and TikTok. Dan is a solutions consultant who handles automation and tooling. Answer questions about Claude for content creation in Emma or Dan\'s voice. Emma: warm, personal, practical — says it like it is. Dan: direct, systems-thinker, no fluff. 2-4 sentences max. Conversational. Never mention "UKG" or "Pigment".';
+
+function init(){buildSidebar();buildPips();buildPromptCards();goTo(0);}
+
+function buildSidebar(){
+  const el=G('sbSteps');
+  STEPS.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='sb-step'+(i===0?' active':'');d.id='sbs-'+i;
+    d.innerHTML='<div class="sb-n" id="sbn-'+i+'">'+(s.isIntro&&i===0?'→':s.isIntro?'✓':i)+'</div><div class="sb-info"><div class="sb-name">'+s.title+'</div></div>'+(i<STEPS.length-1?'<div class="sb-line"></div>':'');
+    d.onclick=()=>goTo(i);
+    el.appendChild(d);
+  });
+}
+function buildPips(){
+  const el=G('pips');
+  STEPS.forEach((_,i)=>{const p=document.createElement('div');p.className='pip'+(i===0?' now':'');p.id='pip-'+i;el.appendChild(p);});
+}
+function buildPromptCards(){
+  const el=G('promptCards'); if(!el)return;
+  PROMPTS.forEach(p=>{
+    const d=document.createElement('div');d.className='prompt-card';d.dataset.tag=p.tag||'all';
+    const why=p.why?'<div class="prompt-card-why">'+p.why+'</div>':'';
+    d.innerHTML='<div class="prompt-card-role">'+p.role+'</div>'+why+'<div class="prompt-card-text">'+p.text.replace(/\n/g,'<br>')+'</div><button class="prompt-card-copy" onclick="copyPrompt(this,\''+encodeURIComponent(p.text)+'\')">Copy</button>';
+    el.appendChild(d);
+  });
+  // complete screen shows top 5
+  const cel=G('completePromptCards'); if(!cel)return;
+  PROMPTS.slice(0,5).forEach(p=>{
+    const d=document.createElement('div');d.className='prompt-card';
+    const why=p.why?'<div class="prompt-card-why">'+p.why+'</div>':'';
+    d.innerHTML='<div class="prompt-card-role">'+p.role+'</div>'+why+'<div class="prompt-card-text">'+p.text.replace(/\n/g,'<br>')+'</div><button class="prompt-card-copy" onclick="copyPrompt(this,\''+encodeURIComponent(p.text)+'\')">Copy</button>';
+    cel.appendChild(d);
+  });
+}
+function buildCompleteCards(){/* cards already built by buildPromptCards */}
+
+function filterPrompts(tag,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#promptCards .prompt-card').forEach(card=>{
+    const show=tag==='all'||card.dataset.tag===tag;
+    card.style.display=show?'':'none';
+  });
+}
+function copyPrompt(btn,enc){
+  navigator.clipboard.writeText(decodeURIComponent(enc)).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+function goTo(idx){
+  cur=idx;const s=STEPS[idx];
+  STEPS.forEach((_,i)=>{
+    G('sbs-'+i).className='sb-step'+(i===idx?' active':i<idx?' done':'');
+    G('sbn-'+i).textContent=i<idx?'✓':(STEPS[i].isIntro&&i===0?'→':STEPS[i].isIntro?'✓':i);
+    G('pip-'+i).className='pip'+(i<idx?' done':i===idx?' now':'');
+  });
+  G('pipLabel').textContent=(idx+1)+' / '+STEPS.length;
+  setUrl(s.url);
+  G('stepGuide').classList.toggle('hidden',!!s.isIntro);
+  if(!s.isIntro){G('stepNum').textContent=s.num;G('stepTitle').textContent=s.title;G('stepInstr').innerHTML=s.instr;}
+  const av=G('coachAv'),who=G('coachWho'),line=G('coachLine');
+  av.className='coach-av '+s.who;av.textContent=s.who==='emma'?'👩':'👨';
+  who.className='coach-who '+s.who;who.textContent=s.who==='emma'?'Emma':'Dan';
+  line.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  setTimeout(()=>{line.innerHTML=s.line;},350);
+  G('qaChipText').textContent=s.title;
+  buildSuggested(s.suggest||[]);
+  G('navBack').classList.toggle('hidden',idx===0);
+  G('navBack').onclick=()=>goBack();
+  G('navNext').classList.add('hidden');
+  G('navNext').className='nav-next hidden';
+  G('navNext').onclick=()=>goNext();
+  clearHl();removeCallout();
+  stepHandlers[idx]?.();
+}
+function goBack(){clearHl();removeCallout();if(cur>0)goTo(cur-1);}
+function goNext(){clearHl();removeCallout();if(cur<STEPS.length-1)goTo(cur+1);else showComplete();}
+function showNext(label,green){
+  const btn=G('navNext');
+  btn.textContent=label||'Continue →';
+  btn.className='nav-next'+(green?' green':'');
+  btn.classList.remove('hidden');
+  btn.onclick=()=>goNext();
+}
+
+const VIEWS=['vIntro','vGeneric','vVoiceDoc','vAnatomy','vBuilder','vRepurpose','vPrompts','vEditing','vModel','vCapstone','vComplete'];
+function showView(id){VIEWS.forEach(v=>hide(v));show(id);G(id).classList.add('fade');setTimeout(()=>G(id)?.classList.remove('fade'),300);}
+
+const stepHandlers = {
+  0(){showView('vIntro');showNext('Start →');},
+  1(){
+    showView('vGeneric');
+    G('stepInstr').innerHTML='Type any topic below and hit <strong>Compare →</strong> to see the difference live.';
+    showNext('Got it →');
+  },
+  2(){
+    showView('vVoiceDoc');
+    const txt='You are a content assistant for Bluebird Automation.\n\nWe\'re Emma Freeman & Dan Guilfoil — married co-founders building AI automation coaching for everyday people. We have a toddler and a newborn and we\'re building in public.\n\nVoice: Confident, casual, real. Ambitious but human.\nNever: Corporate buzzwords, fluffy intros, excessive bullets.\nAlways: Lead with value. Short sentences. Say what we actually think.';
+    const el=G('voiceDocText');el.textContent='';
+    let i=0;const iv=setInterval(()=>{
+      if(i>=txt.length){clearInterval(iv);showNext('Formula next →');}
+      else{el.textContent+=txt[i];i++;}
+    },12);
+    G('stepInstr').innerHTML='Watch our <strong>brand voice doc</strong> load — then build yours.';
+  },
+  3(){showView('vAnatomy');showNext('Try the builder →');},
+  4(){
+    showView('vBuilder');
+    G('stepInstr').innerHTML='Pick <strong>platform</strong>, choose <strong>hook type</strong>, paste your idea, hit generate.';
+    hide('editNudge');hide('genOutput');
+    const pills=G('exPills');pills.innerHTML='';
+    EXAMPLES.forEach((ex,i)=>{const b=document.createElement('button');b.className='example-pill';b.textContent=ex.label;b.onclick=()=>loadExample(i);pills.appendChild(b);});
+    showNext('See repurposing →');
+  },
+  5(){showView('vRepurpose');showNext('Get the prompts →');},
+  6(){showView('vPrompts');showNext('The editing loop →');},
+  7(){showView('vEditing');showNext('Pick your model →');},
+  8(){showView('vModel');showNext('Build the machine →');},
+  9(){
+    showView('vCapstone');
+    G('stepInstr').innerHTML='Check off what you\'ve completed.';
+    showNext('Finish →',true);
+    G('navNext').onclick=()=>showComplete();
+  },
+  10(){showComplete();},
+};
+
+function showComplete(){
+  showView('vComplete');setUrl('claude.ai/projects/bluebird-content');
+  G('stepGuide').classList.add('hidden');
+  G('coachAv').className='coach-av emma';G('coachAv').textContent='🎉';
+  G('coachWho').className='coach-who emma';G('coachWho').textContent='Emma & Dan';
+  G('coachLine').innerHTML='Your content system is live. Brand voice in. Formula locked. Prompts ready. Now go batch your first week — 30 minutes Sunday, full week covered. That\'s the shift. 🎉';
+  STEPS.forEach((_,i)=>{G('pip-'+i).className='pip done';G('sbs-'+i).className='sb-step done';G('sbn-'+i).textContent='✓';});
+  G('pipLabel').textContent='✓ Done';
+  G('navBack').classList.remove('hidden');G('navBack').onclick=()=>goTo(9);
+  G('navNext').classList.remove('hidden');
+  G('navNext').textContent='↺ Replay';G('navNext').className='nav-next';
+  G('navNext').onclick=()=>location.reload();
+}
+
+/* Caption builder interactions */
+function selPlatform(btn,val){
+  document.querySelectorAll('.platform-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');selPlatformVal=val;
+}
+function selHook(btn,val){
+  document.querySelectorAll('.hook-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');selHookVal=val;
+}
+const EXAMPLES=[
+  {label:'🐦 Automation win',hook:'stat',platform:'LinkedIn',idea:"We set up a Make.com automation last Sunday. Took 45 minutes. It now handles something we were doing manually every single day — copying leads into a spreadsheet and firing a Slack notification. Nothing fancy. 45 minutes of setup = zero manual work forever. That math never stops feeling good."},
+  {label:'⚡ Real-time proof',hook:'contrast',platform:'Instagram',idea:"Emma was on a sales call. I was doing bathtime. Our Make.com workflow caught a new lead, logged it to Notion, and sent Emma a Slack ping — all while neither of us touched anything. That's the whole point. The automation runs whether we're working or not."},
+  {label:'👶 Nap time build',hook:'curiosity',platform:'TikTok',idea:"People think you need hours to start using AI. We built our first real workflow during the kids' nap time. 47 minutes. Now it saves us 3 hours a week. The barrier isn't time. It's starting."},
+  {label:'🧠 AI myth',hook:'question',platform:'LinkedIn',idea:"Hot take: most people are using AI wrong. They use it like Google — one question, one answer, done. The real unlock is treating it like a thought partner. You give it context, you give it your voice, and it gives back a perspective you didn't have. That's a completely different thing."},
+  {label:'📅 Sunday batch',hook:'stat',platform:'Instagram',idea:"Sunday morning. Coffee. Both kids somehow still asleep. 30 minutes with Claude. I dump every idea from the week into the project. One raw idea becomes a LinkedIn post, an Instagram caption, a TikTok hook. Full week of content before 9am. This is the system."},
+];
+
+function loadExample(i){
+  const ex=EXAMPLES[i];
+  G('rawIdea').value=ex.idea;
+  G('rawIdea').style.height='auto';
+  G('rawIdea').style.height=Math.min(G('rawIdea').scrollHeight,160)+'px';
+  // auto-select suggested platform and hook
+  document.querySelectorAll('.platform-btn').forEach(b=>{if(b.textContent.toLowerCase().includes(ex.platform.toLowerCase())){b.classList.add('sel');selPlatformVal=ex.platform;}else b.classList.remove('sel');});
+  document.querySelectorAll('.hook-btn').forEach(b=>{if(b.textContent.toLowerCase()===ex.hook){b.classList.add('sel');selHookVal=ex.hook;}else b.classList.remove('sel');});
+  G('stepInstr').innerHTML='Example loaded with suggested platform + hook — or swap them. Hit <strong>Generate</strong>.';
+}
+
+function copyOutput(){
+  const text=G('genText').innerText||G('genText').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=G('copyOutputBtn');
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+async function runEditLoop(){
+  const draft=G('editDraft').value.trim();
+  if(!draft){G('stepInstr').innerHTML='Paste a draft above first.';return;}
+  G('editBtn').disabled=true;
+  G('stepInstr').innerHTML='Claude is applying the editing loop…';
+  show('editResult');
+  G('editBefore').innerHTML=draft.replace(/\n/g,'<br>');
+  G('editAfter').innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  const editPrompt='Edit this caption like you hate mediocrity. Cut every word that isn\'t doing work. Remove all AI-isms: "game-changer", "let\'s dive in", "delve", "in today\'s world", "revolutionary", "leverage", "fast-paced". Replace the most generic sentence with something specific — a real number, a real moment, or an actual opinion. Keep the hook. One close only. Return just the edited caption, no explanation, no preamble.\n\n'+draft;
+  try{
+    const data=await callClaude({model:'claude-sonnet-4-20250514',max_tokens:300,messages:[{role:'user',content:editPrompt}]});
+    const ans=data.content?.[0]?.text||'No response.';
+    G('editAfter').innerHTML=ans.replace(/\n/g,'<br>');
+    G('stepInstr').innerHTML='<strong>See the difference.</strong> Now copy that prompt — use it on every draft you generate.';
+  }catch(e){
+    G('editAfter').innerHTML='<span style="color:var(--red)">Error: '+e.message+'</span>';
+    G('stepInstr').innerHTML='API error — check /api/claude is deployed.';
+  }
+  G('editBtn').disabled=false;
+}
+
+function copyEditPrompt(btn){
+  const text='Edit this caption like you hate mediocrity. Cut every word that isn\'t doing work. Remove all AI-isms: "game-changer", "let\'s dive in", "delve", "in today\'s world", "revolutionary", "leverage", "fast-paced". Replace the most generic sentence with something specific — a real number, a real moment, or an actual opinion. Keep the hook. One close only. Return just the edited caption, no explanation.\n\n[paste caption]';
+  navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);});
+}
+
+async function runBeforeAfter(){
+  const topic=G('genericTopic').value.trim();
+  if(!topic){G('genericTopic').style.borderColor='var(--red)';setTimeout(()=>G('genericTopic').style.borderColor='',1500);return;}
+  show('beforeAfterResult');hide('genericInsight');
+  G('beforeText').innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  G('afterText').innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  G('genericBtn').disabled=true;
+  G('stepInstr').innerHTML='Generating both versions…';
+  const call=async(msgs,sys)=>{
+    const body={model:'claude-sonnet-4-20250514',max_tokens:200,messages:msgs};
+    if(sys)body.system=sys;
+    const d=await callClaude(body);
+    return d.content?.[0]?.text||'';
+  };
+  try{
+    const [before,after]=await Promise.all([
+      call([{role:'user',content:'Write a LinkedIn caption about: '+topic}]),
+      call([{role:'user',content:'Write a LinkedIn caption about: '+topic}],
+        'You are a content assistant for Bluebird Automation. Emma Freeman & Dan Guilfoil — married co-founders, AI automation coaching, two young kids, building in public. Voice: confident, casual, real. Specific over vague. No corporate language. Never start with I. Avoid game-changer, let us dive in, or in today world. Lead with the most interesting thing.')
+    ]);
+    G('beforeText').innerHTML=before.replace(/\n/g,'<br>');
+    G('afterText').innerHTML=after.replace(/\n/g,'<br>');
+    G('stepInstr').innerHTML='<strong>See the difference?</strong> Same topic. Same Claude. The only variable is context.';
+    const insight=G('genericInsight');
+    insight.innerHTML='The only difference: one prompt had 2 sentences of context. That\'s it. That\'s the whole unlock.';
+    show('genericInsight');
+  }catch(e){
+    G('beforeText').innerHTML='<span style="color:var(--red)">Error: '+e.message+'</span>';
+    G('afterText').innerHTML='<span style="color:var(--red)">Error: '+e.message+'</span>';
+    G('stepInstr').innerHTML='API error — check connection.';
+  }
+  G('genericBtn').disabled=false;
+}
+
+async function generateCaption(){
+  const idea=G('rawIdea').value.trim();
+  if(!selPlatformVal){G('stepInstr').innerHTML='⬆️ Pick a <strong>platform</strong> first.';return;}
+  if(!selHookVal){G('stepInstr').innerHTML='⬆️ Choose a <strong>hook type</strong>.';return;}
+  if(!idea){G('stepInstr').innerHTML='⬆️ Paste your <strong>raw idea</strong> above.';return;}
+  show('genOutput');G('genText').innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  G('genBtn').disabled=true;
+  G('stepInstr').innerHTML='Claude is generating your caption…';
+  const hookDesc={curiosity:'that opens with an intriguing question or surprising gap',contrast:'that juxtaposes two opposing realities (before/after, expected/unexpected)',stat:'that leads with a specific number or data point',question:'that opens with a direct provocative question to the reader'};
+  const platDesc={LinkedIn:'professional but human — insight-led, conversational, ends with a question or clear POV. 150-250 words.',Instagram:'story-driven, personal, emoji optional. Hook first line, story body, question close. Under 150 words.',TikTok:'ultra-punchy. First 2 sentences = everything. Under 80 words. Sounds like you are talking, not writing.'};
+  const prompt=`You are a content assistant for Bluebird Automation (Emma Freeman & Dan Guilfoil — married co-founders building AI automation coaching, building in public with a toddler and newborn).
+
+Write a ${selPlatformVal} caption ${hookDesc[selHookVal]||'with a strong hook'}.
+
+Platform tone: ${platDesc[selPlatformVal]||'conversational and real.'}
+
+Voice rules:
+- Confident, casual, direct — never corporate
+- Say what you actually think
+- Specific > vague. Real moments > abstract concepts
+- Never start with "I" as the first word
+- No "Let's dive in", "Game-changer", "In today's world", "Delve into"
+
+Raw idea: ${idea}
+
+Output: Just the caption. No title, no preamble, no "Here's your caption:". Start directly with the hook.`;
+  try{
+    const data=await callClaude({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]});
+    const ans=data.content?.[0]?.text||'No response — try again.';
+    G('genText').innerHTML=ans.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+    G('stepInstr').innerHTML='<strong>Caption generated.</strong> Read it out loud, edit what doesn\'t sound like you, then copy it.';
+    show('editNudge');
+  }catch(e){
+    G('genText').innerHTML='<span style="color:var(--red)">Error: '+e.message+'. Make sure /api/claude is deployed on Vercel.</span>';
+    G('stepInstr').innerHTML='API error — check that the Vercel proxy is deployed.';
+  }
+  G('genBtn').disabled=false;
+}
+
+/* Capstone checklist */
+function toggleCap(id){
+  const el=G(id);const box=G('capBox'+id.slice(-1));
+  el.classList.toggle('done');
+  box.textContent=el.classList.contains('done')?'✓':'';
+  const done=document.querySelectorAll('.check-item.done').length;
+  if(done>=5){G('stepInstr').innerHTML='<strong>System complete.</strong> You\'re ready to batch. Hit Finish → when you\'re ready.';}
+  else{G('stepInstr').innerHTML='Check off <strong>'+done+'/5</strong> completed.';}
+}
+
+/* Helpers */
+function hlEl(id){clearHl();const el=G(id);if(!el)return;el.classList.add('hl');const ring=document.createElement('div');ring.className='pulse';ring.id='pulse-ring';if(getComputedStyle(el).position==='static')el.style.position='relative';el.appendChild(ring);}
+function clearHl(){document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));G('pulse-ring')?.remove();}
+function addCallout(targetId,text,dir){
+  removeCallout();const el=G(targetId);if(!el)return;
+  const r=el.getBoundingClientRect();
+  const c=document.createElement('div');c.className='callout '+(dir||'d');c.id='g-callout';
+  const arrows={'d':'↓','u':'↑','r':'→','l':'←'};
+  c.innerHTML='<span>'+(arrows[dir]||'↓')+'</span> '+text;
+  document.body.appendChild(c);
+  const cr=c.getBoundingClientRect();const gap=14;let top,left;
+  if(dir==='d'){top=r.top-cr.height-gap;left=r.left+r.width/2-cr.width/2;}
+  else if(dir==='u'){top=r.bottom+gap;left=r.left+r.width/2-cr.width/2;}
+  else if(dir==='r'){top=r.top+r.height/2-cr.height/2;left=r.left-cr.width-gap;}
+  else if(dir==='l'){top=r.top+r.height/2-cr.height/2;left=r.right+gap;}
+  c.style.top=Math.max(4,top)+'px';c.style.left=Math.max(4,Math.min(left,window.innerWidth-cr.width-8))+'px';
+}
+function removeCallout(){G('g-callout')?.remove();}
+function typeAnim(id,text,isArea,done){const el=G(id);if(!el){done?.();return;}if(isArea)el.textContent='';else el.value='';let i=0;const iv=setInterval(()=>{if(i>=text.length){clearInterval(iv);done?.();return;}if(isArea)el.textContent+=text[i];else el.value+=text[i];i++;},isArea?11:20);}
+function show(id){G(id)?.classList.remove('hidden');}
+function hide(id){G(id)?.classList.add('hidden');}
+function G(id){return document.getElementById(id);}
+function setUrl(u){const e=G('burl');e.textContent=u;e.classList.add('flash');setTimeout(()=>e.classList.remove('flash'),600);}
+
+/* Q&A */
+function openQA(){qaOpen=true;G('qaDrawer').classList.add('open');G('qaInp').focus();}
+function closeQA(){qaOpen=false;G('qaDrawer').classList.remove('open');}
+function buildSuggested(questions){
+  const el=G('qaSuggested');el.innerHTML='<div class="qa-suggest-label">Suggested questions</div>';
+  (questions||[]).forEach(q=>{const btn=document.createElement('button');btn.className='qa-suggest-btn';btn.textContent=q;btn.onclick=()=>{G('qaInp').value=q;sendQuestion();};el.appendChild(btn);});
+}
+async function sendQuestion(){
+  const inp=G('qaInp');const q=inp.value.trim();if(!q)return;
+  inp.value='';inp.style.height='auto';
+  const sn=STEPS[cur].title;
+  appendQAMsg('user',q);const tid='qt-'+Date.now();
+  appendQAMsg('coach','<div class="dots"><span></span><span></span><span></span></div>',tid);
+  G('qaSendBtn').disabled=true;
+  try{
+    const data=await callClaude({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS+'\n\nStep '+(cur+1)+': "'+sn+'".',messages:[...qaHistory.slice(-4).map(i=>([{role:'user',content:i.q},{role:'assistant',content:i.a}])).flat(),{role:'user',content:q}]});
+    const ans=data.content?.[0]?.text||'Great question — try rephrasing for a clearer answer.';
+    document.getElementById(tid)?.querySelector('.qa-msg-body')&&(document.getElementById(tid).querySelector('.qa-msg-body').innerHTML=ans);
+    qaHistory.push({q,a:ans,step:sn});updateQAHistory();
+    const prev=G('coachLine').innerHTML;G('coachLine').innerHTML=ans.length>90?ans.substring(0,90)+'…':ans;
+    setTimeout(()=>{G('coachLine').innerHTML=prev;},9000);
+  }catch(e){document.getElementById(tid)?.querySelector('.qa-msg-body')&&(document.getElementById(tid).querySelector('.qa-msg-body').textContent='Connection issue — try again.');}
+  G('qaSendBtn').disabled=false;
+}
+function appendQAMsg(role,html,id){
+  const msgs=G('qaMessages');const d=document.createElement('div');
+  d.className='qa-msg '+role;if(id)d.id=id;
+  d.innerHTML='<div class="qa-msg-av '+role+'">'+(role==='coach'?'🐦':'E')+'</div><div class="qa-msg-body">'+html+'</div>';
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+}
+function updateQAHistory(){
+  const el=G('qaHistory');
+  if(!qaHistory.length){el.innerHTML='<div class="sb-qa-empty">No questions yet</div>';return;}
+  el.innerHTML='';
+  qaHistory.slice(-4).reverse().forEach(item=>{
+    const d=document.createElement('div');d.className='sb-qa-item';d.title=item.q;
+    d.innerHTML='<div class="sb-qa-q">'+item.q+'</div><div class="sb-qa-meta">'+item.step+'</div>';
+    d.onclick=()=>{openQA();appendQAMsg('user',item.q);appendQAMsg('coach',item.a);};
+    el.appendChild(d);
+  });
+}
+init();
+</script>
+</body>
+</html>
