@@ -635,7 +635,7 @@ body{background:var(--bg);color:var(--t1);font-family:'DM Sans',sans-serif;font-
 
 <script>
 /* ── API PROXY ── All Claude calls route through /api/claude to avoid CORS */
-const API_URL='/api/claude';
+const API_URL='https://bluebird-dashboard-zeta.vercel.app/api/claude';
 async function callClaude(payload){
   const resp=await fetch(API_URL,{
     method:'POST',
