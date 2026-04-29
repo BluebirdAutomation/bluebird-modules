@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Projects · Bluebird Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   BLUEBIRD ACADEMY — LIGHT DESIGN SYSTEM
+   Shell: warm off-white, clean, modern
+   Claude mock: pixel-accurate Claude.ai light
+═══════════════════════════════════════════ */
+:root {
+  /* Shell — warm light neutrals */
+  --bg:       #F5F3F0;
+  --s1:       #FFFFFF;
+  --s2:       #F0EDE8;
+  --s3:       #E8E4DE;
+  --b1:       #E2DDD7;
+  --b2:       #D4CEC7;
+  --b3:       #B8B2AA;
+  --t1:       #1A1916;
+  --t2:       #4A4742;
+  --t3:       #8A8480;
+  --t4:       #B8B4B0;
+
+  /* Bluebird accent — warm amber */
+  --bb:       #2F7BE5;
+  --bb2:      #1A65CC;
+  --bb-a:     rgba(47,123,229,0.10);
+  --bb-b:     rgba(47,123,229,0.06);
+
+  /* Status colors */
+  --green:    #16A34A;
+  --green-a:  rgba(22,163,74,0.08);
+  --green-b:  rgba(22,163,74,0.05);
+  --yellow:   #D97706;
+  --yellow-a: rgba(47,123,229,0.08);
+  --red:      #DC2626;
+  --red-a:    rgba(220,38,38,0.07);
+  --blue:     #2563EB;
+  --blue-a:   rgba(37,99,235,0.08);
+
+  /* Coach colors */
+  --emma:     #DB2777;
+  --emma-a:   rgba(219,39,119,0.08);
+  --dan:      #2563EB;
+  --dan-a:    rgba(37,99,235,0.08);
+  --qa:       #7C3AED;
+  --qa-a:     rgba(124,58,237,0.08);
+
+  /* ── CLAUDE.AI AUTHENTIC PALETTE (inside browser only) ── */
+  --cl-bg:      #FAF9F7;
+  --cl-sb:      #EFECE7;
+  --cl-sb-b:    #E2DDD7;
+  --cl-txt:     #1A1916;
+  --cl-txt2:    #6B6860;
+  --cl-txt3:    #9E9A95;
+  --cl-inp:     #FFFFFF;
+  --cl-inp-b:   #D4CFC9;
+  --cl-user:    #ECEAE6;
+  --cl-hover:   #E8E4DE;
+  --cl-accent:  #D97706;
+  --cl-sel:     rgba(47,123,229,0.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{
+  background:var(--bg);
+  color:var(--t1);
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── LAYOUT ── */
+.shell{display:grid;grid-template-rows:56px 1fr;height:100vh;}
+.body{display:grid;grid-template-columns:272px 1fr;overflow:hidden;}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--s1);
+  border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;grid-column:1/-1;
+  box-shadow:0 1px 0 var(--b1);
+}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-logo{
+  width:30px;height:30px;
+  background:var(--bb);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;
+  box-shadow:0 1px 3px rgba(47,123,229,0.25);
+}
+.tb-brand{font-weight:700;font-size:13px;color:var(--t1);letter-spacing:-.01em;}
+.tb-divider{width:1px;height:16px;background:var(--b2);margin:0 4px;}
+.tb-crumb{font-size:12px;color:var(--t3);}
+.tb-right{display:flex;align-items:center;gap:6px;}
+.pips{display:flex;gap:3px;align-items:center;}
+.pip{height:3px;width:14px;border-radius:3px;background:var(--b2);transition:all .35s;}
+.pip.done{background:var(--green);}
+.pip.now{background:var(--bb);width:24px;}
+.pip-label{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace;font-weight:500;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  background:var(--s1);
+  border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.sb-head{
+  padding:16px;
+  border-bottom:1px solid var(--b1);
+}
+.sb-head-title{font-weight:600;font-size:13px;color:var(--t1);margin-bottom:2px;}
+.sb-head-sub{font-size:11px;color:var(--t3);}
+.sb-steps{padding:6px 0;flex:1;overflow-y:auto;}
+.sb-step{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:9px 16px;cursor:pointer;
+  position:relative;border-left:2px solid transparent;
+  transition:all .15s;
+}
+.sb-step:hover{background:var(--s2);}
+.sb-step.active{background:var(--bb-b);border-left-color:var(--bb);}
+.sb-step.done{opacity:.55;}
+.sb-step.done:hover{opacity:.85;}
+.sb-n{
+  width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--b2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:600;color:var(--t3);
+  flex-shrink:0;transition:all .2s;
+  font-family:'JetBrains Mono',monospace;
+}
+.sb-step.active .sb-n{border-color:var(--bb);color:var(--bb);background:var(--bb-a);}
+.sb-step.done .sb-n{border-color:var(--green);color:var(--green);background:var(--green-a);}
+.sb-info{flex:1;}
+.sb-name{font-weight:500;font-size:12px;color:var(--t1);margin-bottom:1px;line-height:1.3;}
+.sb-line{position:absolute;left:27px;top:32px;bottom:-9px;width:1px;background:var(--b1);}
+.sb-step:last-child .sb-line{display:none;}
+.sb-qa-section{border-top:1px solid var(--b1);padding:12px 16px;}
+.sb-qa-title{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.sb-qa-item{padding:7px 8px;border-radius:7px;background:var(--s2);border:1px solid var(--b1);margin-bottom:4px;cursor:pointer;transition:all .15s;}
+.sb-qa-item:hover{border-color:var(--qa);background:var(--qa-a);}
+.sb-qa-q{font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-qa-meta{font-size:10px;color:var(--t3);margin-top:2px;}
+.sb-qa-empty{font-size:11px;color:var(--t3);font-style:italic;}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;overflow:hidden;position:relative;}
+
+/* ── COACH STRIP — slim emotional caption ── */
+.coach{
+  background:var(--s1);
+  border-bottom:1px solid var(--b1);
+  padding:8px 16px;
+  display:flex;gap:10px;align-items:center;
+  flex-shrink:0;
+}
+.coach-av{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.coach-av.emma{background:var(--emma-a);border:1.5px solid var(--emma);}
+.coach-av.dan{background:var(--dan-a);border:1.5px solid var(--dan);}
+.coach-av.qa{background:var(--qa-a);border:1.5px solid var(--qa);}
+.coach-who{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;}
+.coach-who.emma{color:var(--emma);}
+.coach-who.dan{color:var(--dan);}
+.coach-who.qa{color:var(--qa);}
+.coach-line{font-size:12px;color:var(--t2);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4;}
+.coach-line strong{color:var(--t1);}
+.ask-btn{
+  padding:4px 11px;border-radius:6px;font-size:10px;font-weight:600;
+  font-family:'DM Sans',sans-serif;cursor:pointer;
+  background:var(--qa-a);color:var(--qa);
+  border:1px solid rgba(124,58,237,.2);
+  flex-shrink:0;transition:all .15s;white-space:nowrap;
+}
+.ask-btn:hover{background:rgba(124,58,237,.14);}
+
+.dots{display:inline-flex;gap:3px;align-items:center;}
+.dots span{width:4px;height:4px;border-radius:50%;background:var(--t3);animation:dot .9s infinite;}
+.dots span:nth-child(2){animation-delay:.18s;}
+.dots span:nth-child(3){animation-delay:.36s;}
+@keyframes dot{0%,80%,100%{transform:scale(.55);opacity:.35;}40%{transform:scale(1);opacity:1;}}
+
+/* ── Q&A DRAWER ── */
+.qa-drawer{
+  position:absolute;top:0;right:0;bottom:0;width:360px;
+  background:var(--s1);
+  border-left:1px solid var(--b1);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.34,1.1,.64,1);
+  z-index:50;
+  box-shadow:-8px 0 32px rgba(0,0,0,.08);
+}
+.qa-drawer.open{transform:translateX(0);}
+.qa-header{padding:14px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;}
+.qa-header-left{display:flex;align-items:center;gap:8px;}
+.qa-badge{width:7px;height:7px;border-radius:50%;background:var(--qa);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.qa-title{font-weight:600;font-size:13px;color:var(--t1);}
+.qa-sub{font-size:11px;color:var(--t3);}
+.qa-close{
+  width:28px;height:28px;border-radius:6px;
+  border:1px solid var(--b1);background:transparent;
+  color:var(--t3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:all .15s;
+}
+.qa-close:hover{background:var(--s2);color:var(--t2);}
+.qa-context-chip{
+  margin:10px 14px 0;padding:6px 10px;
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:7px;font-size:11px;color:var(--t3);
+  display:flex;align-items:center;gap:6px;
+}
+.qa-context-chip strong{color:var(--t2);}
+.qa-messages{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+.qa-msg{display:flex;gap:8px;animation:fadeUp .2s ease;}
+.qa-msg.user{flex-direction:row-reverse;}
+.qa-msg-av{
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;flex-shrink:0;margin-top:2px;
+}
+.qa-msg-av.coach{background:var(--qa-a);border:1.5px solid var(--qa);font-size:12px;}
+.qa-msg-av.user{background:var(--s2);color:var(--t2);border:1px solid var(--b1);}
+.qa-msg-body{max-width:85%;padding:8px 11px;border-radius:10px;font-size:12px;line-height:1.6;}
+.qa-msg.coach .qa-msg-body{background:var(--s2);color:var(--t2);border:1px solid var(--b1);}
+.qa-msg.user .qa-msg-body{background:var(--bb);color:white;}
+.qa-msg-body strong{color:var(--t1);}
+.qa-msg.user .qa-msg-body strong{color:white;}
+.qa-suggested{padding:0 14px 10px;display:flex;flex-direction:column;gap:4px;}
+.qa-suggest-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;}
+.qa-suggest-btn{
+  padding:7px 10px;background:var(--s2);
+  border:1px solid var(--b1);border-radius:7px;
+  font-size:11px;color:var(--t2);cursor:pointer;
+  text-align:left;font-family:'DM Sans',sans-serif;
+  transition:all .15s;line-height:1.4;
+}
+.qa-suggest-btn:hover{border-color:var(--qa);color:var(--qa);background:var(--qa-a);}
+.qa-input-row{padding:12px 14px;border-top:1px solid var(--b1);display:flex;gap:8px;align-items:flex-end;}
+.qa-inp{
+  flex:1;background:var(--s2);border:1px solid var(--b1);
+  border-radius:8px;padding:8px 11px;
+  font-family:'DM Sans',sans-serif;font-size:12px;color:var(--t1);
+  outline:none;resize:none;min-height:36px;max-height:100px;
+  line-height:1.5;transition:border-color .2s;
+}
+.qa-inp:focus{border-color:var(--qa);}
+.qa-inp::placeholder{color:var(--t4);}
+.qa-send{
+  width:32px;height:32px;background:var(--qa);border:none;
+  border-radius:7px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;transition:all .15s;
+}
+.qa-send:hover{background:#6D28D9;}
+.qa-send:disabled{opacity:.35;cursor:not-allowed;}
+
+/* ── BROWSER FRAME ── */
+.browser{
+  flex:1;display:flex;flex-direction:column;
+  margin:12px;
+  border:1px solid var(--b2);
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 2px 16px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.03);
+  min-height:0;
+  background:var(--cl-bg);
+}
+.bbar{
+  background:var(--s2);
+  border-bottom:1px solid var(--b1);
+  padding:7px 12px;
+  display:flex;align-items:center;gap:8px;
+  flex-shrink:0;
+}
+.bdots{display:flex;gap:5px;align-items:center;}
+.bdot{width:10px;height:10px;border-radius:50%;}
+.bd1{background:#FF5F57;}.bd2{background:#FFBD2E;}.bd3{background:#28C840;}
+.burl{
+  flex:1;background:var(--cl-inp);border:1px solid var(--cl-inp-b);
+  border-radius:6px;padding:4px 10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);
+  transition:all .3s;
+}
+.burl.flash{color:var(--t2);}
+
+/* ═══════════════════════════════════════════
+   CLAUDE.AI AUTHENTIC MOCK
+   Based on pixel-accurate study of claude.ai
+   light mode interface as of 2025
+═══════════════════════════════════════════ */
+.claude{flex:1;display:flex;overflow:hidden;font-family:-apple-system,'DM Sans',sans-serif;}
+
+/* Claude sidebar icon buttons */
+.cl-icon-btn{
+  width:26px;height:26px;border-radius:5px;
+  border:none;background:transparent;
+  color:var(--cl-txt3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;
+}
+.cl-icon-btn:hover{background:var(--cl-hover);color:var(--cl-txt2);}
+
+/* Sidebar top row */
+.cl-sb-toprow{display:flex;align-items:center;padding:0 2px;}
+
+/* Utility section above account */
+.cl-sb-utils{
+  border-top:1px solid var(--cl-sb-b);
+  padding:4px 0;
+}
+
+/* Sidebar account row — pinned bottom */
+.cl-sb-account{
+  padding:8px 10px;
+  border-top:1px solid var(--cl-sb-b);
+  display:flex;align-items:center;gap:8px;
+}
+.cl-sb-avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--cl-accent);color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;
+}
+.cl-sb-account-name{font-size:12px;color:var(--cl-txt2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+
+/* Chat input pill icon button */
+.cl-pill-icon{
+  width:26px;height:26px;border-radius:5px;
+  border:none;background:transparent;
+  color:var(--cl-txt3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;
+}
+.cl-pill-icon:hover{color:var(--cl-txt2);}
+
+/* Input toolbar — below pill, exact claude.ai */
+.cl-input-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:4px 2px 0;gap:6px;
+}
+.cl-toolbar-left{display:flex;gap:4px;}
+.cl-toolbar-right{display:flex;gap:5px;align-items:center;}
+.cl-toolbar-btn{
+  display:flex;align-items:center;gap:4px;
+  padding:4px 9px;border-radius:6px;
+  font-size:11px;font-weight:500;color:var(--cl-txt3);
+  background:transparent;border:none;
+  cursor:pointer;transition:all .15s;font-family:inherit;
+  white-space:nowrap;
+}
+.cl-toolbar-btn:hover{background:var(--cl-hover);color:var(--cl-txt2);}
+.cl-toolbar-btn-outline{
+  border:1px solid var(--cl-inp-b) !important;
+  color:var(--cl-txt2) !important;
+}
+.cl-toolbar-btn-outline:hover{border-color:var(--cl-txt3) !important;}
+.cl-model-sel{
+  display:flex;align-items:center;gap:4px;
+  padding:4px 8px;border-radius:6px;
+  font-size:11px;color:var(--cl-txt2);font-weight:500;
+  cursor:pointer;transition:all .15s;font-family:inherit;
+  border:1px solid var(--cl-inp-b);background:transparent;
+  white-space:nowrap;
+}
+.cl-model-sel:hover{background:var(--cl-hover);}
+
+/* Claude sidebar flex layout */
+.cl-sb{
+  width:220px;background:var(--cl-sb);
+  border-right:1px solid var(--cl-sb-b);
+  display:flex;flex-direction:column;
+  flex-shrink:0;height:100%;overflow:hidden;
+}
+
+.cl-sb-top{padding:8px 10px 4px;}
+.cl-new-btn{
+  width:100%;padding:8px 10px;
+  background:var(--cl-inp);
+  border:1px solid var(--cl-inp-b);
+  border-radius:8px;
+  color:var(--cl-txt);
+  font-size:12px;font-weight:500;
+  font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+  transition:all .15s;
+}
+.cl-new-btn:hover{background:var(--cl-hover);}
+.cl-new-btn-icon{
+  width:18px;height:18px;border-radius:4px;
+  background:var(--cl-accent);
+  display:flex;align-items:center;justify-content:center;
+  color:white;font-size:11px;font-weight:700;
+  flex-shrink:0;
+}
+.cl-sb-sec{padding:6px 10px 2px;}
+.cl-sb-lbl{
+  font-size:10px;font-weight:600;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--cl-txt3);
+  margin-bottom:3px;padding:0 2px;
+  display:flex;align-items:center;gap:4px;
+}
+.cl-sb-item{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 8px;border-radius:7px;
+  cursor:pointer;font-size:12px;color:var(--cl-txt2);
+  transition:all .15s;position:relative;
+}
+.cl-sb-item:hover{background:var(--cl-hover);}
+.cl-sb-item.active{background:var(--cl-inp);color:var(--cl-txt);font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.cl-sb-item.new-proj{
+  color:var(--cl-accent);font-weight:500;
+  border:1px dashed rgba(217,119,6,.3);
+  margin-top:3px;
+}
+.cl-sb-item.new-proj:hover{background:rgba(217,119,6,.06);}
+.cl-sb-item.saved{
+  background:var(--green-b);color:var(--green);
+  font-weight:500;border:1px solid rgba(22,163,74,.15);
+}
+.cl-sb-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center;}
+.cl-sb-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;}
+.cl-recent{
+  font-size:11px;color:var(--cl-txt3);
+  padding:4px 8px;border-radius:5px;
+  cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  transition:all .15s;
+}
+.cl-recent:hover{background:var(--cl-hover);color:var(--cl-txt2);}
+
+/* Claude main chat area */
+.cl-main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--cl-bg);}
+
+/* Step guide bar — lives inside browser */
+.step-guide{
+  padding:10px 16px 9px;
+  border-bottom:1px solid var(--cl-sb-b);
+  background:var(--cl-inp);
+  flex-shrink:0;
+  display:flex;align-items:center;gap:10px;
+}
+.step-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;
+  color:var(--bb);background:var(--bb-b);
+  padding:3px 8px;border-radius:5px;
+  flex-shrink:0;
+}
+.step-badge-n{
+  background:var(--bb);color:white;
+  width:15px;height:15px;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;
+}
+.step-instr{font-size:12px;color:var(--cl-txt2);flex:1;line-height:1.4;}
+.step-instr strong{color:var(--cl-txt);font-weight:600;}
+
+/* Views */
+.v{flex:1;overflow-y:auto;}
+.v-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;gap:10px;}
+
+/* Prompt card — used in complete screen */
+.prompt-card{
+  background:var(--cl-inp);
+  border:1px solid var(--cl-sb-b);
+  border-radius:10px;padding:12px 14px;
+  margin-bottom:8px;cursor:pointer;
+  transition:all .2s;position:relative;
+}
+.prompt-card:hover{border-color:var(--cl-accent);box-shadow:0 2px 8px rgba(47,123,229,.10);}
+.prompt-card-role{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--cl-accent);margin-bottom:4px;}
+.prompt-card-text{font-size:12px;color:var(--cl-txt);line-height:1.55;font-family:'JetBrains Mono',monospace;}
+.prompt-card-copy{
+  position:absolute;top:10px;right:10px;
+  padding:3px 8px;border-radius:4px;
+  font-size:10px;font-weight:600;
+  background:var(--bb-a);color:var(--bb);border:none;cursor:pointer;
+  opacity:0;transition:opacity .15s;
+  font-family:'DM Sans',sans-serif;
+}
+.prompt-card:hover .prompt-card-copy{opacity:1;}
+.prompt-card-copy.copied{background:var(--green-a);color:var(--green);}
+
+/* Form elements — claude.ai authentic */
+.cl-form{padding:18px;display:flex;flex-direction:column;gap:12px;}
+.cl-field-lbl{
+  font-size:11px;font-weight:600;color:var(--cl-txt2);
+  margin-bottom:5px;letter-spacing:.1px;
+}
+.cl-input{
+  width:100%;background:var(--cl-inp);
+  border:1px solid var(--cl-inp-b);
+  border-radius:8px;padding:9px 12px;
+  font-family:inherit;font-size:13px;color:var(--cl-txt);
+  outline:none;transition:all .2s;cursor:pointer;
+}
+.cl-input:hover{border-color:var(--cl-txt3);}
+.cl-input.active{border-color:var(--cl-accent);box-shadow:0 0 0 3px rgba(47,123,229,.10);cursor:text;}
+.cl-input.ok{border-color:var(--green);background:var(--green-b);}
+.cl-textarea{
+  width:100%;background:var(--cl-inp);
+  border:1px solid var(--cl-inp-b);
+  border-radius:8px;padding:9px 12px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--cl-txt2);outline:none;
+  min-height:110px;resize:none;line-height:1.7;
+  white-space:pre-wrap;transition:all .2s;cursor:pointer;
+}
+.cl-textarea:hover{border-color:var(--cl-txt3);}
+.cl-textarea.active{border-color:var(--cl-accent);box-shadow:0 0 0 3px rgba(47,123,229,.10);}
+.cl-textarea.ok{border-color:var(--green);background:var(--green-b);}
+.cl-upload{
+  border:1.5px dashed var(--cl-inp-b);border-radius:8px;
+  padding:16px;text-align:center;cursor:pointer;transition:all .2s;
+}
+.cl-upload:hover{border-color:var(--cl-accent);background:var(--bb-b);}
+.cl-upload-done{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;background:var(--green-b);
+  border:1px solid rgba(22,163,74,.2);border-radius:8px;
+  font-size:12px;color:var(--green);
+}
+.cl-save-btn{
+  padding:9px 18px;background:var(--cl-accent);
+  color:white;border:none;border-radius:8px;
+  font-size:13px;font-weight:600;font-family:inherit;
+  cursor:pointer;align-self:flex-start;transition:all .2s;position:relative;
+}
+.cl-save-btn:hover{background:#C96800;}
+.cl-save-btn.ok{background:var(--green);}
+
+/* Projects list */
+.cl-proj-list{padding:16px;}
+.cl-proj-card{
+  background:var(--cl-inp);border:1px solid var(--cl-sb-b);
+  border-radius:10px;padding:12px 14px;
+  display:flex;gap:11px;align-items:center;
+  cursor:pointer;transition:all .2s;
+  position:relative;margin-bottom:8px;
+}
+.cl-proj-card:hover{border-color:var(--cl-accent);box-shadow:0 2px 8px rgba(47,123,229,.08);}
+.cl-proj-icon{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--bb-a);
+  border:1.5px dashed rgba(217,119,6,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.cl-proj-name{font-weight:600;font-size:13px;color:var(--cl-txt);margin-bottom:2px;}
+.cl-proj-sub{font-size:11px;color:var(--cl-txt3);}
+
+/* Chat — exact claude.ai style */
+.cl-chat-header{
+  padding:11px 16px;
+  border-bottom:1px solid var(--cl-sb-b);
+  display:flex;align-items:center;gap:9px;
+  flex-shrink:0;
+  background:var(--cl-inp);
+}
+.cl-chat-name{font-weight:600;font-size:13px;color:var(--cl-txt);}
+.cl-chat-badge{
+  font-size:10px;color:var(--green);
+  background:var(--green-b);padding:3px 8px;
+  border-radius:4px;margin-left:auto;font-weight:600;
+}
+.cl-msgs{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+.cl-msg{display:flex;gap:10px;animation:fadeUp .25s ease;}
+.cl-msg.user{flex-direction:row-reverse;}
+.cl-msg-av{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;margin-top:2px;
+}
+.cl-msg-av.ai{
+  background:var(--cl-accent);color:white;
+  font-size:13px;font-weight:700;
+}
+.cl-msg-av.user{
+  background:var(--cl-sb);color:var(--cl-txt);
+  border:1px solid var(--cl-sb-b);font-size:11px;font-weight:600;
+}
+/* AI messages: plain text, no bubble (exact claude.ai behavior) */
+.cl-msg-bd{max-width:85%;font-size:13px;line-height:1.7;color:var(--cl-txt);}
+.cl-msg.ai .cl-msg-bd{padding:2px 0;}
+/* User messages: pill bubble */
+.cl-msg.user .cl-msg-bd{
+  background:var(--cl-user);
+  padding:10px 14px;border-radius:18px 18px 4px 18px;
+  color:var(--cl-txt);font-size:13px;
+}
+.cl-msg-bd strong{font-weight:600;}
+
+/* Chat input — claude.ai pill style */
+.cl-input-area{
+  padding:12px 16px 14px;
+  border-top:1px solid var(--cl-sb-b);
+  display:flex;flex-direction:column;gap:8px;
+  flex-shrink:0;background:var(--cl-bg);
+}
+.cl-input-pill{
+  display:flex;align-items:flex-end;gap:8px;
+  background:var(--cl-inp);
+  border:1px solid var(--cl-inp-b);
+  border-radius:16px;
+  padding:8px 8px 8px 14px;
+  transition:border-color .2s;
+}
+.cl-input-pill.active{border-color:var(--cl-accent);}
+.cl-chat-inp{
+  flex:1;background:transparent;border:none;
+  font-family:inherit;font-size:13px;color:var(--cl-txt);
+  outline:none;resize:none;line-height:1.5;
+  min-height:22px;cursor:pointer;
+}
+.cl-chat-inp::placeholder{color:var(--cl-txt3);}
+.cl-send-btn{
+  width:32px;height:32px;background:var(--cl-accent);
+  border:none;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;transition:all .15s;
+}
+.cl-send-btn:hover{background:#C96800;}
+.cl-send-btn.hidden{display:none;}
+
+/* Pulse ring */
+.pulse{
+  position:absolute;inset:-4px;border-radius:10px;
+  border:2px solid var(--bb);
+  animation:ring 1.4s infinite;pointer-events:none;z-index:10;
+}
+@keyframes ring{
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(47,123,229,.25);}
+  50%{opacity:.4;box-shadow:0 0 0 6px rgba(224,123,57,0);}
+}
+
+/* Callout — warm amber, arrow on face pointing toward target */
+.callout{
+  position:fixed;background:var(--bb);color:white;
+  padding:7px 12px;border-radius:8px;
+  font-size:11px;font-weight:600;
+  white-space:nowrap;pointer-events:none;z-index:100;
+  box-shadow:0 4px 16px rgba(47,123,229,.30);
+  display:flex;align-items:center;gap:5px;
+  font-family:'DM Sans',sans-serif;
+}
+.callout::after{content:'';position:absolute;border:6px solid transparent;}
+.callout.d::after{bottom:-12px;left:50%;transform:translateX(-50%);border-top-color:var(--bb);}
+.callout.u::after{top:-12px;left:50%;transform:translateX(-50%);border-bottom-color:var(--bb);}
+.callout.r::after{left:-12px;top:50%;transform:translateY(-50%);border-right-color:var(--bb);}
+.callout.l::after{right:-12px;top:50%;transform:translateY(-50%);border-left-color:var(--bb);}
+
+/* Nav bar — compact action zone, clear blue border top */
+.nav-bar{
+  padding:8px 14px;
+  border-top:1.5px solid var(--bb);
+  background:var(--s1);
+  display:flex;align-items:center;justify-content:flex-end;gap:6px;
+  flex-shrink:0;
+}
+.nav-back{
+  padding:6px 14px;border-radius:7px;
+  font-size:12px;font-weight:500;
+  font-family:'DM Sans',sans-serif;cursor:pointer;
+  background:transparent;border:1px solid var(--b2);
+  color:var(--t2);transition:all .15s;white-space:nowrap;
+}
+.nav-back:hover{background:var(--s2);border-color:var(--b3);color:var(--t1);}
+.nav-next{
+  padding:6px 18px;border-radius:7px;
+  font-size:12px;font-weight:600;
+  font-family:'DM Sans',sans-serif;cursor:pointer;
+  background:var(--bb);color:white;border:none;
+  transition:all .15s;
+  display:flex;align-items:center;gap:5px;
+  box-shadow:0 1px 6px rgba(47,123,229,.25);
+  letter-spacing:.1px;white-space:nowrap;
+}
+.nav-next:hover{background:var(--bb2);box-shadow:0 2px 8px rgba(47,123,229,.35);}
+.nav-next:disabled{opacity:.3;cursor:not-allowed;box-shadow:none;}
+.nav-next.green{background:var(--green);box-shadow:0 1px 6px rgba(22,163,74,.22);}
+.nav-next.green:hover{background:#15803D;}
+
+/* Info cards */
+.info-card{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:11px 13px;background:var(--green-b);
+  border:1px solid rgba(22,163,74,.15);border-radius:9px;
+  font-size:12px;color:var(--cl-txt2);margin-bottom:10px;
+}
+.info-card strong{color:var(--cl-txt);}
+.warn-card{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:11px 13px;background:var(--red-a);
+  border:1px solid rgba(220,38,38,.12);border-radius:9px;
+  font-size:12px;color:var(--cl-txt2);margin-bottom:10px;
+}
+.warn-card strong{color:var(--red);}
+.tip-card{
+  padding:10px 12px;background:var(--yellow-a);
+  border:1px solid rgba(217,119,6,.15);border-radius:8px;
+  font-size:11px;color:var(--cl-txt2);margin-bottom:10px;line-height:1.6;
+}
+.tip-card strong{color:var(--yellow);}
+
+/* Anatomy breakdown */
+.anatomy{
+  background:var(--cl-inp);border:1px solid var(--cl-sb-b);
+  border-radius:9px;overflow:hidden;margin-bottom:10px;
+}
+.anatomy-row{
+  display:flex;gap:0;align-items:stretch;
+  border-bottom:1px solid var(--cl-sb-b);
+}
+.anatomy-row:last-child{border-bottom:none;}
+.anatomy-label{
+  font-size:10px;font-weight:700;color:var(--bb);
+  background:var(--bb-b);
+  padding:9px 10px;width:72px;flex-shrink:0;
+  display:flex;align-items:center;
+  border-right:1px solid var(--cl-sb-b);
+  line-height:1.3;text-transform:uppercase;letter-spacing:.4px;
+}
+.anatomy-val{
+  font-size:11px;color:var(--cl-txt2);
+  padding:9px 12px;line-height:1.55;
+  font-family:'JetBrains Mono',monospace;flex:1;
+}
+
+/* Before/After comparison */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.compare-bad{
+  background:var(--red-a);border:1px solid rgba(220,38,38,.12);
+  border-radius:9px;padding:12px;
+}
+.compare-good{
+  background:var(--green-b);border:1px solid rgba(22,163,74,.15);
+  border-radius:9px;padding:12px;
+}
+.compare-label{
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;margin-bottom:7px;
+}
+.compare-bad .compare-label{color:var(--red);}
+.compare-good .compare-label{color:var(--green);}
+.compare-text{font-size:11px;color:var(--cl-txt2);line-height:1.65;}
+
+/* Project stack cards */
+.stack-card{
+  background:var(--cl-inp);border:1px solid var(--cl-sb-b);
+  border-radius:10px;padding:12px 14px;
+  display:flex;gap:12px;align-items:center;
+  cursor:pointer;transition:all .2s;margin-bottom:8px;
+}
+.stack-card:hover{border-color:var(--cl-accent);box-shadow:0 2px 8px rgba(47,123,229,.08);}
+.stack-card.built{background:var(--green-b);border-color:rgba(22,163,74,.2);}
+.stack-icon{
+  width:38px;height:38px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.stack-icon.filled{background:var(--green-a);}
+.stack-icon.empty{background:var(--cl-sb);border:1.5px dashed var(--cl-sb-b);}
+.stack-name{font-weight:600;font-size:13px;color:var(--cl-txt);margin-bottom:2px;}
+.stack-use{font-size:11px;color:var(--cl-txt3);}
+
+/* Settings rows */
+.settings-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid var(--cl-sb-b);
+}
+.settings-row:last-child{border-bottom:none;}
+.settings-lbl{font-size:13px;color:var(--cl-txt);font-weight:500;}
+.settings-sub{font-size:11px;color:var(--cl-txt3);margin-top:2px;}
+.settings-btn{
+  font-size:11px;color:var(--cl-accent);cursor:pointer;
+  background:var(--bb-b);padding:4px 10px;
+  border-radius:5px;border:1px solid rgba(217,119,6,.2);
+  transition:all .15s;white-space:nowrap;
+}
+.settings-btn:hover{background:var(--bb-a);}
+
+/* CTA */
+.open-cta{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;background:var(--cl-inp);
+  border:1px solid var(--cl-sb-b);border-radius:10px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+  margin-bottom:10px;
+}
+.open-cta:hover{border-color:var(--cl-accent);box-shadow:0 2px 8px rgba(47,123,229,.08);}
+.open-cta-title{font-size:13px;font-weight:600;color:var(--cl-txt);margin-bottom:1px;}
+.open-cta-sub{font-size:11px;color:var(--cl-txt3);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.hidden{display:none!important;}
+.fade{animation:fadeUp .22s ease;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">🐦</div>
+    <span class="tb-brand">Bluebird Academy</span>
+    <div class="tb-divider"></div>
+    <span class="tb-crumb">Claude Projects</span>
+  </div>
+  <div class="tb-right">
+    <div class="pips" id="pips"></div>
+    <span class="pip-label" id="pipLabel">1 / 9</span>
+  </div>
+</div>
+
+<div class="body">
+
+<div class="sidebar">
+  <div class="sb-head">
+    <div class="sb-head-title">Walkthrough</div>
+    <div class="sb-head-sub">Click any step to jump to it</div>
+  </div>
+  <div class="sb-steps" id="sbSteps"></div>
+  <div class="sb-qa-section">
+    <div class="sb-qa-title">💬 Your Questions</div>
+    <div id="qaHistory"><div class="sb-qa-empty">No questions yet</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- COACH STRIP -->
+  <div class="coach">
+    <div class="coach-av emma" id="coachAv">👩</div>
+    <div class="coach-who emma" id="coachWho">Emma</div>
+    <div class="coach-line" id="coachLine"><div class="dots"><span></span><span></span><span></span></div></div>
+    <button class="ask-btn" onclick="openQA()">💬 Ask a question</button>
+  </div>
+
+  <!-- BROWSER -->
+  <div class="browser">
+    <div class="bbar">
+      <div class="bdots"><div class="bdot bd1"></div><div class="bdot bd2"></div><div class="bdot bd3"></div></div>
+      <div class="burl" id="burl">claude.ai</div>
+    </div>
+    <div class="claude">
+
+      <!-- Claude.ai sidebar — pixel-accurate full replica -->
+      <div class="cl-sb">
+
+        <!-- Top: collapse + new chat icons -->
+        <div class="cl-sb-top">
+          <div class="cl-sb-toprow">
+            <button class="cl-icon-btn" title="Close sidebar">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 3v18"/></svg>
+            </button>
+            <div style="flex:1;"></div>
+            <button class="cl-icon-btn" title="New chat">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Starred section -->
+        <div class="cl-sb-sec">
+          <div class="cl-sb-lbl">
+            <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24" style="opacity:.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Starred
+          </div>
+          <div class="cl-recent" style="color:var(--cl-txt3);font-style:italic;">No starred conversations</div>
+        </div>
+
+        <!-- Projects section -->
+        <div class="cl-sb-sec">
+          <div class="cl-sb-lbl">Projects</div>
+          <div class="cl-sb-item" id="ci-proj">
+            <span class="cl-sb-icon">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <span class="cl-sb-text">My Projects</span>
+          </div>
+          <div class="cl-sb-item new-proj hidden" id="ci-new">
+            <span class="cl-sb-icon" style="font-size:14px;">＋</span>
+            <span class="cl-sb-text">New project</span>
+          </div>
+          <div class="cl-sb-item saved hidden" id="ci-bb">
+            <span class="cl-sb-icon">🐦</span>
+            <span class="cl-sb-text">Bluebird Content</span>
+          </div>
+          <div class="cl-sb-item saved hidden" id="ci-sales">
+            <span class="cl-sb-icon">💼</span>
+            <span class="cl-sb-text">Sales Prep</span>
+          </div>
+          <div class="cl-sb-item saved hidden" id="ci-home">
+            <span class="cl-sb-icon">🏠</span>
+            <span class="cl-sb-text">Home &amp; Life</span>
+          </div>
+        </div>
+
+        <!-- Recents section -->
+        <div class="cl-sb-sec" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;">
+          <div class="cl-sb-lbl">Recents</div>
+          <div style="overflow-y:auto;flex:1;">
+            <div class="cl-recent">Caption ideas for launch</div>
+            <div class="cl-recent">LinkedIn post draft</div>
+            <div class="cl-recent">Email to Bluebird leads</div>
+            <div class="cl-recent">Automation workshop outline</div>
+            <div class="cl-recent">Newsletter — April edition</div>
+          </div>
+        </div>
+
+        <!-- Divider + utility items -->
+        <div class="cl-sb-utils">
+          <div class="cl-sb-item">
+            <span class="cl-sb-icon">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </span>
+            <span class="cl-sb-text">Customize Claude</span>
+          </div>
+          <div class="cl-sb-item">
+            <span class="cl-sb-icon">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>
+            </span>
+            <span class="cl-sb-text">Claude's memory</span>
+          </div>
+          <div class="cl-sb-item">
+            <span class="cl-sb-icon">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            </span>
+            <span class="cl-sb-text">Help &amp; support</span>
+          </div>
+        </div>
+
+        <!-- Account row — pinned bottom -->
+        <div class="cl-sb-account">
+          <div class="cl-sb-avatar">E</div>
+          <div class="cl-sb-account-name">Emma Freeman</div>
+          <button class="cl-icon-btn" style="margin-left:auto;flex-shrink:0;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Claude.ai main area -->
+      <div class="cl-main">
+
+        <!-- Step guide -->
+        <div class="step-guide" id="stepGuide">
+          <div class="step-badge"><div class="step-badge-n" id="stepNum">→</div><span id="stepTitle">Welcome</span></div>
+          <div class="step-instr" id="stepInstr">Get ready to build your first Claude Project.</div>
+        </div>
+
+        <!-- View: Intro -->
+        <div class="v fade" id="vIntro">
+          <div style="padding:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <div style="font-size:36px;">🐦</div>
+              <div>
+                <div style="font-weight:700;font-size:16px;color:var(--cl-txt);margin-bottom:3px;">Claude Projects</div>
+                <div style="font-size:11px;color:var(--cl-txt3);">9 steps · ~8 minutes · hands-on walkthrough</div>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--cl-txt2);line-height:1.75;margin-bottom:20px;">
+              The biggest frustration with AI is that it <strong style="color:var(--cl-txt);">forgets everything</strong> between conversations. You re-explain your brand, your context, your voice — every single time.<br><br>
+              <strong style="color:var(--cl-txt);">Claude Projects fixes that permanently.</strong> Set your instructions once, upload your files once, and Claude loads all of it automatically — every single conversation.
+            </div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--cl-txt3);margin-bottom:10px;">What you'll build</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;">
+                <div style="font-size:18px;">✍️</div>
+                <div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A named project with your brand voice baked in</div><div style="font-size:11px;color:var(--cl-txt3);">Instructions Claude reads before every message</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;">
+                <div style="font-size:18px;">📎</div>
+                <div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A knowledge file Claude always has access to</div><div style="font-size:11px;color:var(--cl-txt3);">Upload once — never paste into a chat again</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;">
+                <div style="font-size:18px;">🧪</div>
+                <div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A live before/after test</div><div style="font-size:11px;color:var(--cl-txt3);">See exactly why this changes everything</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;">
+                <div style="font-size:18px;">🗂️</div>
+                <div><div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;">A prompt starter pack for your role</div><div style="font-size:11px;color:var(--cl-txt3);">Ready-to-use prompts you can copy and keep</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View: Claude Landing -->
+        <div class="v hidden fade" id="vLand">
+          <div class="v-center" style="flex:1;">
+            <div style="width:52px;height:52px;border-radius:14px;background:var(--cl-accent);display:flex;align-items:center;justify-content:center;font-size:26px;color:white;margin-bottom:4px;box-shadow:0 4px 12px rgba(217,119,6,.25);">C</div>
+            <div style="font-weight:600;font-size:16px;color:var(--cl-txt);">How can I help you today?</div>
+            <div style="font-size:12px;color:var(--cl-txt3);max-width:220px;line-height:1.5;">Start a conversation, or open a Project for a context-aware workspace.</div>
+          </div>
+        </div>
+
+        <!-- View: Projects list -->
+        <div class="v hidden fade" id="vProj">
+          <div class="cl-proj-list">
+            <div style="font-weight:700;font-size:15px;color:var(--cl-txt);padding-bottom:10px;border-bottom:1px solid var(--cl-sb-b);margin-bottom:14px;">My Projects</div>
+            <div class="cl-proj-card" id="newProjCard" style="position:relative;">
+              <div class="cl-proj-icon">＋</div>
+              <div>
+                <div class="cl-proj-name">Create new project</div>
+                <div class="cl-proj-sub">Set instructions, context &amp; knowledge files</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View: Project form -->
+        <div class="v hidden fade" id="vForm">
+          <div class="cl-form">
+            <div style="font-weight:700;font-size:15px;color:var(--cl-txt);">New Project</div>
+            <div>
+              <div class="cl-field-lbl">Project name</div>
+              <input class="cl-input" id="fName" placeholder="Click to enter a name…" readonly>
+            </div>
+            <div id="instrSection" class="hidden">
+              <div class="cl-field-lbl">Project instructions</div>
+              <div class="cl-textarea" id="fInstr"></div>
+            </div>
+            <div id="knowSection" class="hidden">
+              <div class="cl-field-lbl">Knowledge files</div>
+              <div class="cl-upload" id="fUp">
+                <div style="font-size:22px;margin-bottom:5px;">📎</div>
+                <div style="font-size:12px;color:var(--cl-txt2);">Click to upload files</div>
+                <div style="font-size:11px;color:var(--cl-txt3);margin-top:2px;">Brand guide, bios, past content</div>
+              </div>
+              <div class="cl-upload-done hidden" id="fUpDone">✓ bluebird-brand-guide.pdf added</div>
+            </div>
+            <button class="cl-save-btn hidden" id="saveBtn">Create Project</button>
+          </div>
+        </div>
+
+        <!-- View: Instructions anatomy -->
+        <div class="v hidden fade" id="vInstrBreak">
+          <div style="padding:18px;">
+            <div class="tip-card"><strong>Four ingredients make great instructions.</strong> Claude reads all of this before every message in this project — get it right and it sounds like you.</div>
+            <div class="anatomy">
+              <div class="anatomy-row"><div class="anatomy-label">Role</div><div class="anatomy-val">You are a content assistant for Bluebird Automation.</div></div>
+              <div class="anatomy-row"><div class="anatomy-label">Context</div><div class="anatomy-val">Emma &amp; Dan — married co-founders, AI coaching, building in public, toddler + newborn.</div></div>
+              <div class="anatomy-row"><div class="anatomy-label">Voice</div><div class="anatomy-val">Confident, casual, real. Ambitious but human.</div></div>
+              <div class="anatomy-row"><div class="anatomy-label">Rules</div><div class="anatomy-val">Never corporate buzzwords. Never "Certainly!". Always lead with value.</div></div>
+            </div>
+            <div class="info-card"><strong>Your four ingredients:</strong> What's your role? What context does Claude need? How should it sound? What should it never do? Answer those and you have your instructions.</div>
+          </div>
+        </div>
+
+        <!-- View: Before/after comparison -->
+        <div class="v hidden fade" id="vCompare">
+          <div style="padding:18px;">
+            <div class="warn-card"><strong>Without a project:</strong> Claude starts from zero every chat. It doesn't know you, your brand, or how you write.</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--cl-txt3);margin-bottom:9px;">Same prompt · Two very different results</div>
+            <div class="compare-grid">
+              <div class="compare-bad">
+                <div class="compare-label">❌ Without project</div>
+                <div class="compare-text">"Here is a LinkedIn post about AI saving time:<br><br>AI tools are revolutionizing productivity! By leveraging cutting-edge automation solutions, professionals can streamline their workflows..."</div>
+              </div>
+              <div class="compare-good">
+                <div class="compare-label">✓ With project</div>
+                <div class="compare-text">"We took back 3 hours this week.<br><br>Sunday nights used to mean batch-writing content. Not anymore. We baked our brand voice into Claude permanently. 🐦"</div>
+              </div>
+            </div>
+            <div class="info-card"><strong>Same prompt.</strong> The project version sounds like Bluebird. The other sounds like every AI post you've ever scrolled past.</div>
+          </div>
+        </div>
+
+        <!-- View: Chat (test it out) -->
+        <div class="v hidden fade" id="vChat" style="display:flex;flex-direction:column;">
+          <div class="cl-chat-header">
+            <span style="font-size:18px;">🐦</span>
+            <div class="cl-chat-name" id="chatName">Bluebird Content</div>
+            <div class="cl-chat-badge">✓ Instructions active · 1 file</div>
+          </div>
+          <div class="cl-msgs" id="chatMsgs"></div>
+          <div class="cl-input-area">
+            <!-- Input pill -->
+            <div class="cl-input-pill" id="chatPill">
+              <input class="cl-chat-inp" id="chatInp" placeholder="How can Claude help you today?" readonly>
+              <button class="cl-pill-icon" title="Voice input">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </button>
+              <button class="cl-send-btn hidden" id="chatSend" onclick="sendChat()">
+                <svg width="13" height="13" fill="white" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              </button>
+            </div>
+            <!-- Input toolbar row — exact claude.ai layout -->
+            <div class="cl-input-toolbar">
+              <div class="cl-toolbar-left">
+                <button class="cl-toolbar-btn">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                  Add context
+                </button>
+                <button class="cl-toolbar-btn">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                  Research
+                </button>
+              </div>
+              <div class="cl-toolbar-right">
+                <button class="cl-toolbar-btn cl-toolbar-btn-outline">
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                  Artifacts
+                </button>
+                <div class="cl-model-sel">
+                  Claude Sonnet 4.5
+                  <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View: Project stack -->
+        <div class="v hidden fade" id="vStack">
+          <div style="padding:18px;">
+            <div style="font-size:15px;font-weight:700;color:var(--cl-txt);margin-bottom:4px;">Your Project Stack</div>
+            <div style="font-size:12px;color:var(--cl-txt3);margin-bottom:14px;">Most people end up with 3–5 projects. Each one is a permanent brain for a different area of work.</div>
+            <div class="stack-card built">
+              <div class="stack-icon filled">🐦</div>
+              <div><div class="stack-name">Bluebird Content <span style="font-size:11px;color:var(--green);font-weight:500;">✓ Built</span></div><div class="stack-use">Content creation, captions, LinkedIn</div></div>
+            </div>
+            <div class="stack-card" id="salesCard" style="position:relative;">
+              <div class="stack-icon empty">💼</div>
+              <div><div class="stack-name">Sales Prep</div><div class="stack-use">Pre-call research, discovery questions, follow-ups</div></div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-icon empty">🏠</div>
+              <div><div class="stack-name">Home &amp; Life</div><div class="stack-use">Meal planning, FSA, home admin, finances</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View: Settings -->
+        <div class="v hidden fade" id="vSettings">
+          <div style="padding:18px;">
+            <div style="font-size:15px;font-weight:700;color:var(--cl-txt);margin-bottom:14px;">🐦 Bluebird Content — Settings</div>
+            <div class="settings-row">
+              <div><div class="settings-lbl">Project instructions</div><div class="settings-sub">Update your voice, rules, or context anytime</div></div>
+              <div class="settings-btn" id="editInstrBtn">Edit</div>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-lbl">Knowledge files</div><div class="settings-sub">bluebird-brand-guide.pdf · 1 file</div></div>
+              <div class="settings-btn">Manage</div>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-lbl">Project members</div><div class="settings-sub">Share with your team (Pro or Team plans)</div></div>
+              <div class="settings-btn">Invite</div>
+            </div>
+            <div style="margin-top:10px;" class="hidden" id="editInstrPanel">
+              <div class="cl-field-lbl">Instructions</div>
+              <div class="cl-textarea ok" style="min-height:70px;cursor:default;">You are a content assistant for Bluebird Automation.
+
+Voice: Confident, casual, real. Ambitious but human.
+Never: Corporate buzzwords.
+Always: Lead with value. Short sentences.</div>
+              <div style="margin-top:7px;font-size:11px;color:var(--green);font-weight:500;">✓ Changes save automatically</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View: Prompt Starter Pack (complete) -->
+        <div class="v hidden fade" id="vComplete">
+          <div style="padding:18px;">
+            <div class="info-card"><strong>Project live. 🎉</strong> Instructions baked in, knowledge file loaded. Every conversation here starts from your context automatically — zero re-explaining, ever.</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--cl-txt3);margin-bottom:10px;margin-top:4px;">Your Prompt Starter Pack</div>
+            <div style="font-size:12px;color:var(--cl-txt2);margin-bottom:12px;line-height:1.5;">Copy any of these into your Bluebird Content project right now. They're pre-written to work with the instructions you just set up.</div>
+            <div id="promptCards"></div>
+            <a class="open-cta" href="https://claude.ai" target="_blank">
+              <div style="font-size:22px;">🐦</div>
+              <div>
+                <div class="open-cta-title">Open Claude &amp; start your project →</div>
+                <div class="open-cta-sub">Takes less than 5 minutes. Your instructions are ready to paste.</div>
+              </div>
+              <div style="margin-left:auto;color:var(--cl-accent);font-size:18px;">›</div>
+            </a>
+          </div>
+        </div>
+
+        <!-- NAV BAR — pinned inside browser -->
+        <div class="nav-bar" id="navBar">
+          <button class="nav-back hidden" id="navBack" onclick="goBack()">← Back</button>
+          <button class="nav-next hidden" id="navNext" onclick="goNext()">Continue →</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A DRAWER -->
+  <div class="qa-drawer" id="qaDrawer">
+    <div class="qa-header">
+      <div class="qa-header-left">
+        <div class="qa-badge"></div>
+            <div class="qa-sep"></div>
+    <div style="margin-bottom:32px;">
+      <div class="coach">
+        <div class="coach-av dan" style="background: var(--dan-a); border: 1.5px solid var(--dan); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">👨</div>
+        <div style="flex: 1;">
+          <div class="coach-who dan" style="color: var(--dan); font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px;">Dan</div>
+          <div class="coach-line" style="color: var(--t2); font-size: 12px; line-height: 1.4;">Before I figured this out, I had ideas everywhere. Chats open across three tools. Notes that went nowhere. Every time I sat down to actually work, half my energy went to figuring out where I left off — re-explaining context, re-loading background, starting from scratch. I was managing the tool instead of using it. The day I loaded a master doc into a project and Claude already knew everything before I typed a word — that was the shift. I stopped repeating myself. The stress dropped. The ideas started connecting. That's what you're building in this module.</div>
+        </div>
+      </div>
+    </div>
+<div><div class="qa-title">Ask a Question</div><div class="qa-sub">Answered by your Bluebird coaches</div></div>
+      </div>
+      <button class="qa-close" onclick="closeQA()">✕</button>
+    </div>
+    <div class="qa-context-chip"><span>📍</span><span>Asking about: <strong id="qaChipText">Welcome</strong></span></div>
+    <div class="qa-suggested" id="qaSuggested"><div class="qa-suggest-label">Suggested questions</div></div>
+    <div class="qa-messages" id="qaMessages"></div>
+    <div class="qa-input-row">
+      <textarea class="qa-inp" id="qaInp" placeholder="Ask anything about this step…" rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendQuestion();}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+      <button class="qa-send" id="qaSendBtn" onclick="sendQuestion()">
+        <svg width="13" height="13" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+/* ── PROMPTS ── high-quality starters for Claude Projects */
+const PROMPTS = [
+  {
+    role:'Content Creation',
+    text:'Write a LinkedIn post about [topic] in our voice. Keep it under 200 words, lead with a hook, and end with a question to drive comments. Sound like us — confident, real, human.'
+  },
+  {
+    role:'Content Repurposing',
+    text:'Take this piece of content and turn it into 3 formats: a LinkedIn post, a short-form caption, and a 3-bullet email teaser. Keep our voice across all three.\n\n[Paste original content here]'
+  },
+  {
+    role:'Brand Voice Check',
+    text:'Review this draft for brand voice consistency. Does it sound like Bluebird? Flag anything that sounds too corporate, too generic, or off-tone. Suggest specific rewrites.\n\n[Paste draft here]'
+  },
+  {
+    role:'Content Strategy',
+    text:'Give me 10 post ideas for this week based on what\'s relevant in the AI automation space right now. Frame each one as a specific Bluebird angle — tie it to our story, our tools, or our audience.'
+  },
+  {
+    role:'Email Draft',
+    text:'Write a short email to our Bluebird list about [topic]. Casual tone, under 150 words, one clear CTA at the end. No fluff, no "I hope this email finds you well."'
+  },
+];
+
+/* ── STEPS ── */
+const STEPS = [
+  { who:'emma', line:'We built this because we were tired of re-explaining ourselves to AI every single day. 👩',
+    num:'→', title:'What You\'ll Build', instr:'', isIntro:true,
+    suggest:['How long does this take?','Do I need a paid Claude plan?','Will this work for my industry?'],
+    url:'claude.ai' },
+  { who:'emma', line:'This single feature gave us back hours every week. 👩',
+    num:'1', title:'Find & Create a Project', instr:'Click <strong>My Projects</strong> in the sidebar.',
+    suggest:['What is a Project?','How is this different from a regular chat?','Can I have multiple projects?'],
+    url:'claude.ai' },
+  { who:'dan', line:"You'll have more than one. The name needs to tell you exactly what to open. 👨",
+    num:'2', title:'Name Your Project', instr:'Click the <strong>Project name</strong> field to fill it in.',
+    suggest:['What makes a good name?','Can I rename later?','How should I organize multiple projects?'],
+    url:'claude.ai/projects/new' },
+  { who:'emma', line:"This is the single most powerful thing I've ever set up in AI. 👩",
+    num:'3', title:'Write Instructions', instr:'Click the <strong>Instructions</strong> field — watch how we write ours.',
+    suggest:['What should I include?','How long should they be?','Can I update later?'],
+    url:'claude.ai/projects/new' },
+  { who:'dan', line:'Four ingredients. Every great set of instructions has exactly these four. 👨',
+    num:'4', title:'What Makes Good Instructions', instr:'See how instructions break down into role, context, voice, and rules.',
+    suggest:['Can I see more examples?','How specific should I be?','What if my voice changes over time?'],
+    url:'claude.ai/projects/new' },
+  { who:'dan', line:"Most people skip this. That's why their AI still sounds generic. 👨",
+    num:'5', title:'Upload Knowledge', instr:'Click the <strong>upload zone</strong> to attach your brand guide.',
+    suggest:['What file types work?','How much can I upload?','Does Claude read the whole file every time?'],
+    url:'claude.ai/projects/new' },
+  { who:'emma', line:"No setup. No preamble. This is what it feels like when Claude already knows you. 👩",
+    num:'6', title:'Test It Out', instr:'Click the <strong>message field</strong> to enter a real prompt.',
+    suggest:['Why does it sound so different?','Can I use this for other tasks?','How do I know it\'s using my instructions?'],
+    url:'claude.ai/projects/bluebird-content' },
+  { who:'emma', line:"Same prompt. Night and day. This is why the setup matters. 👩",
+    num:'7', title:'See the Difference', instr:'Compare what Claude says with a project vs. without one.',
+    suggest:['Why is the difference so big?','Can I show this to my team?'],
+    url:'claude.ai/projects/bluebird-content' },
+  { who:'dan', line:"Something shifted when I stopped re-explaining myself to every chat. It wasn\\'t just the time back. I realized I wasn\\'t just getting faster answers — I was thinking differently. The scattered ideas, the open tabs, the half-finished thoughts — they had somewhere to go. And what came back wasn\\'t just a response. It was a strategic perspective I hadn\\'t considered. A clearer way of seeing the problem. I stopped managing the tool and started thinking alongside it. That\\'s a different thing entirely. 👨",
+    num:'8', title:'The Shift', instr:'Feel this moment. This is where the real unlock happens.',
+    suggest:['Why does thinking change?','Is this just about efficiency?','What does "alongside" mean?'],
+    url:'claude.ai/projects' },
+  { who:'dan', line:'One project is a start. Three is a system. 👨',
+    num:'9', title:'Build Your Stack', instr:'See your full project setup — and how to edit anything later.',
+    suggest:['How many projects should I have?','Can I share with teammates?','How do I delete a project?'],
+    url:'claude.ai/projects' },
+];
+
+let cur=0, qaOpen=false, qaHistory=[];
+const SYS='You are a teaching assistant for Bluebird Academy by Emma Freeman and Dan Guilfoil — married co-founders of Bluebird Automation with a toddler and a newborn, building in public. Answer questions about Claude Projects in Emma or Dan\'s voice. Emma: warm, personal, practical. Dan: direct, systems-thinker. 2-4 sentences max. Conversational. Never mention "UKG" or "Pigment".';
+
+function init(){ buildSidebar(); buildPips(); buildPromptCards(); goTo(0); }
+
+function buildSidebar(){
+  const el=G('sbSteps');
+  STEPS.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='sb-step'+(i===0?' active':''); d.id='sbs-'+i;
+    d.innerHTML='<div class="sb-n" id="sbn-'+i+'">'+(s.isIntro?'→':i)+'</div><div class="sb-info"><div class="sb-name">'+s.title+'</div></div>'+(i<STEPS.length-1?'<div class="sb-line"></div>':'');
+    d.onclick=()=>goTo(i);
+    el.appendChild(d);
+  });
+}
+function buildPips(){
+  const el=G('pips');
+  STEPS.forEach((_,i)=>{const p=document.createElement('div');p.className='pip'+(i===0?' now':'');p.id='pip-'+i;el.appendChild(p);});
+}
+function buildPromptCards(){
+  const el=G('promptCards'); if(!el) return;
+  PROMPTS.forEach(p=>{
+    const d=document.createElement('div'); d.className='prompt-card';
+    d.innerHTML='<div class="prompt-card-role">'+p.role+'</div><div class="prompt-card-text">'+p.text.replace(/\n/g,'<br>')+'</div><button class="prompt-card-copy" onclick="copyPrompt(this,\''+encodeURIComponent(p.text)+'\')">Copy</button>';
+    el.appendChild(d);
+  });
+}
+function copyPrompt(btn,enc){
+  navigator.clipboard.writeText(decodeURIComponent(enc)).then(()=>{
+    btn.textContent='Copied!'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+/* ── NAVIGATION ── */
+function goTo(idx){
+  cur=idx; const s=STEPS[idx];
+  STEPS.forEach((_,i)=>{
+    G('sbs-'+i).className='sb-step'+(i===idx?' active':i<idx?' done':'');
+    G('sbn-'+i).textContent=i<idx?'✓':(STEPS[i].isIntro?'→':i);
+    G('pip-'+i).className='pip'+(i<idx?' done':i===idx?' now':'');
+  });
+  G('pipLabel').textContent=(idx+1)+' / '+STEPS.length;
+  setUrl(s.url);
+  G('stepGuide').classList.toggle('hidden',!!s.isIntro);
+  if(!s.isIntro){ G('stepNum').textContent=s.num; G('stepTitle').textContent=s.title; G('stepInstr').innerHTML=s.instr; }
+  const av=G('coachAv'),who=G('coachWho'),line=G('coachLine');
+  av.className='coach-av '+s.who; av.textContent=s.who==='emma'?'👩':'👨';
+  who.className='coach-who '+s.who; who.textContent=s.who==='emma'?'Emma':'Dan';
+  line.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  setTimeout(()=>{ line.innerHTML=s.line; },350);
+  G('qaChipText').textContent=s.title;
+  buildSuggested(s.suggest||[]);
+  G('navBack').classList.toggle('hidden',idx===0);
+  G('navBack').onclick=()=>goBack();
+  G('navNext').classList.add('hidden');
+  G('navNext').className='nav-next hidden';
+  G('navNext').onclick=()=>goNext();
+  clearHl(); removeCallout();
+  stepHandlers[idx]?.();
+}
+function goBack(){ clearHl(); removeCallout(); if(cur>0) goTo(cur-1); }
+function goNext(){ clearHl(); removeCallout(); if(cur<STEPS.length-1) goTo(cur+1); else showComplete(); }
+function showNext(label,green){
+  const btn=G('navNext');
+  btn.textContent=label||'Continue →';
+  btn.className='nav-next'+(green?' green':'');
+  btn.onclick=()=>goNext();
+}
+
+/* ── STEP HANDLERS ── */
+const stepHandlers = {
+  0(){ showView('vIntro'); showNext('Start →'); },
+
+  1(){
+    showView('vLand');
+    hlEl('ci-proj'); addCallout('ci-proj','Click My Projects','l');
+    G('ci-proj').onclick=(e)=>{
+      e.stopPropagation(); clearHl(); removeCallout();
+      showView('vProj'); setUrl('claude.ai/projects'); show('ci-new');
+      G('stepInstr').innerHTML='Now click <strong>Create new project</strong>.';
+      hlEl('newProjCard'); addCallout('newProjCard','Click here','d');
+      G('newProjCard').onclick=(e2)=>{
+        e2.stopPropagation(); clearHl(); removeCallout();
+        showView('vForm'); setUrl('claude.ai/projects/new');
+        hide('instrSection'); hide('knowSection');
+        G('saveBtn').classList.add('hidden');
+        G('fName').value=''; G('fName').className='cl-input';
+        goTo(2);
+      };
+    };
+  },
+
+  2(){
+    showView('vForm'); hide('instrSection'); hide('knowSection');
+    G('saveBtn').classList.add('hidden');
+    G('fName').value=''; G('fName').className='cl-input';
+    hlEl('fName'); addCallout('fName','Click to enter a name','d');
+    G('fName').onclick=()=>{
+      clearHl(); removeCallout();
+      G('fName').className='cl-input active';
+      G('stepInstr').innerHTML='Typing your project name…';
+      typeAnim('fName','Bluebird Content',false,()=>{
+        G('fName').className='cl-input ok';
+        G('stepInstr').innerHTML='<strong>Named.</strong> Now click the <strong>Instructions</strong> field.';
+        show('instrSection'); G('fInstr').textContent=''; G('fInstr').className='cl-textarea';
+        hlEl('fInstr'); addCallout('fInstr','Click to add instructions','d');
+        G('fInstr').onclick=()=>startTypeInstr();
+        showNext();
+      });
+    };
+  },
+
+  3(){
+    showView('vForm'); show('instrSection'); hide('knowSection');
+    G('saveBtn').classList.add('hidden');
+    G('fName').className='cl-input ok'; G('fName').value='Bluebird Content';
+    G('fInstr').textContent=''; G('fInstr').className='cl-textarea';
+    hlEl('fInstr'); addCallout('fInstr','Click to add instructions','d');
+    G('fInstr').onclick=()=>startTypeInstr();
+  },
+
+  4(){ showView('vInstrBreak'); showNext(); },
+
+  5(){
+    showView('vForm'); show('instrSection'); show('knowSection');
+    G('saveBtn').classList.add('hidden');
+    G('fName').className='cl-input ok'; G('fName').value='Bluebird Content';
+    G('fInstr').className='cl-textarea ok';
+    G('fInstr').textContent='You are a content assistant for Bluebird Automation.\n\nWe\'re Emma Freeman & Dan Guilfoil — married co-founders building an AI automation coaching business. We have a toddler and a newborn and we\'re building in public.\n\nVoice: Confident, casual, real. Ambitious but human.\nNever: Corporate buzzwords, "Certainly!" openers.\nAlways: Lead with value. Short sentences.';
+    show('fUp'); hide('fUpDone'); G('fUp').className='cl-upload';
+    hlEl('fUp'); addCallout('fUp','Click to upload your brand guide','d');
+    G('fUp').onclick=()=>{
+      clearHl(); removeCallout();
+      hide('fUp'); show('fUpDone');
+      G('saveBtn').classList.remove('hidden'); G('saveBtn').className='cl-save-btn';
+      hlEl('saveBtn'); addCallout('saveBtn','Click Create Project','d');
+      G('stepInstr').innerHTML='File uploaded. Click <strong>Create Project</strong> to lock it all in.';
+      G('saveBtn').onclick=()=>startCreateProject();
+      showNext('Create Project →');
+      G('navNext').onclick=()=>startCreateProject();
+    };
+  },
+
+  6(){
+    showView('vChat'); setUrl('claude.ai/projects/bluebird-content');
+    G('chatMsgs').innerHTML='';
+    addMsg('ai','Hi! I\'m set up as your <strong>Bluebird Content</strong> assistant. Your instructions and brand guide are loaded — I already know your voice and context. What would you like to create today?');
+    G('chatSend').classList.add('hidden');
+    G('chatInp').value=''; G('chatInp').className='cl-chat-inp';
+    G('chatPill').classList.remove('active');
+    hlEl('chatPill'); addCallout('chatPill','Click to enter your prompt','d');
+    G('chatInp').onclick=()=>{
+      clearHl(); removeCallout();
+      G('chatPill').classList.add('active');
+      G('stepInstr').innerHTML='Typing a real prompt…';
+      typeAnim('chatInp','Write a LinkedIn post about how we used AI to save 3 hours this week on content creation',false,()=>{
+        G('chatSend').classList.remove('hidden');
+        hlEl('chatSend'); addCallout('chatSend','Click Send','d');
+        G('stepInstr').innerHTML='Prompt ready. Click <strong>Send</strong>.';
+        showNext('Send →',true);
+        G('navNext').onclick=sendChat;
+        G('chatSend').onclick=sendChat;
+      });
+    };
+  },
+
+  7(){ showView('vCompare'); showNext(); },
+
+  8(){
+    showView('vStack'); show('ci-bb'); setUrl('claude.ai/projects');
+    hlEl('salesCard'); addCallout('salesCard','See what a second project looks like','d');
+    G('salesCard').onclick=(e)=>{
+      e.stopPropagation(); clearHl(); removeCallout();
+      show('ci-sales'); showView('vSettings');
+      setUrl('claude.ai/projects/bluebird-content/settings');
+      G('stepInstr').innerHTML='Projects are fully editable anytime. Click <strong>Edit</strong> to update instructions.';
+      hlEl('editInstrBtn'); addCallout('editInstrBtn','Click to see how editing works','d');
+      G('editInstrBtn').onclick=()=>{
+        clearHl(); removeCallout();
+        show('editInstrPanel');
+        G('stepInstr').innerHTML='<strong>Instructions update live.</strong> Every future conversation uses the new version immediately.';
+        showNext('Finish →');
+        G('navNext').onclick=()=>showComplete();
+      };
+    };
+  },
+};
+
+/* ── INTERACTIONS ── */
+function startTypeInstr(){
+  clearHl(); removeCallout();
+  G('fInstr').className='cl-textarea active';
+  G('stepInstr').innerHTML='Watch how we write ours — then customize yours.';
+  const txt='You are a content assistant for Bluebird Automation.\n\nWe\'re Emma Freeman & Dan Guilfoil — married co-founders building an AI automation coaching business for everyday people. We have a toddler and a newborn and we\'re building in public.\n\nVoice: Confident, casual, real. Ambitious but human. Say what we think.\nNever: Corporate buzzwords, "Certainly!" openers, excessive bullets.\nAlways: Lead with value. Short sentences. Make it feel human.';
+  typeAnim('fInstr',txt,true,()=>{
+    G('fInstr').className='cl-textarea ok';
+    G('stepInstr').innerHTML='<strong>Instructions set.</strong> Now click the <strong>upload zone</strong>.';
+    show('knowSection'); show('fUp'); hide('fUpDone');
+    G('saveBtn').classList.add('hidden');
+    hlEl('fUp'); addCallout('fUp','Upload a knowledge file','d');
+    G('fUp').onclick=()=>{
+      clearHl(); removeCallout();
+      hide('fUp'); show('fUpDone');
+      G('saveBtn').classList.remove('hidden'); G('saveBtn').className='cl-save-btn';
+      hlEl('saveBtn'); addCallout('saveBtn','Click Create Project','d');
+      G('stepInstr').innerHTML='File uploaded. Click <strong>Create Project</strong>.';
+      G('saveBtn').onclick=()=>startCreateProject();
+      showNext('Create Project →'); G('navNext').onclick=()=>startCreateProject();
+    };
+    showNext();
+  });
+}
+
+function startCreateProject(){
+  clearHl(); removeCallout();
+  G('saveBtn').classList.add('ok'); G('saveBtn').textContent='✓ Project created!';
+  show('ci-bb'); hide('ci-new'); setUrl('claude.ai/projects/bluebird-content');
+  G('stepInstr').innerHTML='<strong>Project is live.</strong> Now let\'s test it.';
+  setTimeout(()=>goTo(6),700);
+}
+
+function sendChat(){
+  clearHl(); removeCallout();
+  const text=G('chatInp').value; if(!text)return;
+  addMsg('user',text);
+  G('chatInp').value=''; G('chatInp').className='cl-chat-inp';
+  G('chatPill').classList.remove('active');
+  G('chatSend').classList.add('hidden');
+  G('navNext').classList.add('hidden');
+  G('stepInstr').innerHTML='Claude is responding…';
+  setTimeout(()=>{
+    addMsg('ai','<div class="dots"><span></span><span></span><span></span></div>');
+    setTimeout(()=>{
+      G('chatMsgs').lastElementChild.querySelector('.cl-msg-bd').innerHTML=
+        'Here\'s a LinkedIn post:<br><br><strong>We took back 3 hours this week. Here\'s exactly how.</strong><br><br>Sunday nights used to mean batch-writing content for the week ahead. Not anymore.<br><br>We set up a Claude Project with our brand voice baked in permanently. Now every post starts from a place that already sounds like us — no re-explaining, no warm-up.<br><br><strong>Time saved: ~3 hours. Time to set it up: 45 minutes.</strong><br><br>If you\'re still re-explaining yourself to AI every single time — there\'s a better way. 🐦';
+      G('stepInstr').innerHTML='<strong>That\'s a Claude Project working.</strong> Notice how it sounds like Bluebird — not a generic AI. Read it, then continue when ready.';
+      showNext('Next: See why →');
+    },1800);
+  },500);
+}
+
+function addMsg(role,html){
+  const msgs=G('chatMsgs');
+  const d=document.createElement('div'); d.className='cl-msg '+role;
+  const av=role==='ai'?'<div class="cl-msg-av ai">C</div>':'<div class="cl-msg-av user">E</div>';
+  d.innerHTML=av+'<div class="cl-msg-bd">'+html+'</div>';
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showComplete(){
+  showView('vComplete'); setUrl('claude.ai/projects');
+  G('stepGuide').innerHTML='<div class="step-badge"><div class="step-badge-n">✓</div><span>Complete</span></div><div class="step-instr" style="color:var(--cl-txt2);">Project live. Your prompt starter pack is ready to copy.</div>';
+  G('coachAv').className='coach-av emma'; G('coachAv').textContent='🎉';
+  G('coachWho').className='coach-who emma'; G('coachWho').textContent='Emma & Dan';
+  G('coachLine').innerHTML='Think about the thing you explain most often &mdash; to a new tool, to a colleague, to yourself. The background, the context, the &quot;here&rsquo;s what I&rsquo;m working on.&quot; Imagine never explaining that again. That&rsquo;s what you just set up. Every time you open this project from here, that setup is already done. What used to be overhead is just gone. And here&rsquo;s the part we didn&rsquo;t expect: it&rsquo;s not just faster. It&rsquo;s clearer. When you stop spending energy on setup, something shifts. You start thinking bigger. You start working on the thing instead of just getting to the thing. That&rsquo;s what this was always about. 🎉';
+  STEPS.forEach((_,i)=>{ G('pip-'+i).className='pip done'; G('sbs-'+i).className='sb-step done'; G('sbn-'+i).textContent='✓'; });
+  G('pipLabel').textContent='✓ Done';
+  G('navBack').classList.remove('hidden'); G('navBack').onclick=()=>goTo(8);
+  G('navNext').classList.remove('hidden');
+  G('navNext').textContent='↺ Replay'; G('navNext').className='nav-next';
+  G('navNext').onclick=()=>location.reload();
+}
+
+/* ── HELPERS ── */
+const VIEWS=['vIntro','vLand','vProj','vForm','vInstrBreak','vCompare','vChat','vStack','vSettings','vComplete'];
+function showView(id){ VIEWS.forEach(v=>hide(v)); show(id); G(id).classList.add('fade'); setTimeout(()=>G(id)?.classList.remove('fade'),300); }
+function hlEl(id){ clearHl(); const el=G(id); if(!el)return; el.classList.add('hl'); const ring=document.createElement('div'); ring.className='pulse'; ring.id='pulse-ring'; if(getComputedStyle(el).position==='static')el.style.position='relative'; el.appendChild(ring); }
+function clearHl(){ document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl')); G('pulse-ring')?.remove(); }
+function addCallout(targetId,text,dir){
+  removeCallout(); const el=G(targetId); if(!el)return;
+  const r=el.getBoundingClientRect();
+  const c=document.createElement('div'); c.className='callout '+(dir||'d'); c.id='g-callout';
+  const arrows={'d':'↓','u':'↑','r':'→','l':'←'};
+  c.innerHTML='<span>'+(arrows[dir]||'↓')+'</span> '+text;
+  document.body.appendChild(c);
+  const cr=c.getBoundingClientRect(); const gap=14; let top,left;
+  if(dir==='d'){top=r.top-cr.height-gap;left=r.left+r.width/2-cr.width/2;}
+  else if(dir==='u'){top=r.bottom+gap;left=r.left+r.width/2-cr.width/2;}
+  else if(dir==='r'){top=r.top+r.height/2-cr.height/2;left=r.left-cr.width-gap;}
+  else if(dir==='l'){top=r.top+r.height/2-cr.height/2;left=r.right+gap;}
+  c.style.top=Math.max(4,top)+'px'; c.style.left=Math.max(4,Math.min(left,window.innerWidth-cr.width-8))+'px';
+}
+function removeCallout(){ G('g-callout')?.remove(); }
+function typeAnim(id,text,isArea,done){
+  const el=G(id); if(!el){done?.();return;}
+  if(isArea)el.textContent=''; else el.value='';
+  let i=0; const iv=setInterval(()=>{
+    if(i>=text.length){clearInterval(iv);done?.();return;}
+    if(isArea)el.textContent+=text[i]; else el.value+=text[i];
+    i++;
+  },isArea?11:20);
+}
+function show(id){ G(id)?.classList.remove('hidden'); }
+function hide(id){ G(id)?.classList.add('hidden'); }
+function G(id){ return document.getElementById(id); }
+function setUrl(u){ const e=G('burl'); e.textContent=u; e.classList.add('flash'); setTimeout(()=>e.classList.remove('flash'),600); }
+
+/* ── Q&A ── */
+function openQA(){ qaOpen=true; G('qaDrawer').classList.add('open'); G('qaInp').focus(); }
+function closeQA(){ qaOpen=false; G('qaDrawer').classList.remove('open'); }
+function buildSuggested(questions){
+  const el=G('qaSuggested'); el.innerHTML='<div class="qa-suggest-label">Suggested questions</div>';
+  (questions||[]).forEach(q=>{ const btn=document.createElement('button'); btn.className='qa-suggest-btn'; btn.textContent=q; btn.onclick=()=>{G('qaInp').value=q;sendQuestion();}; el.appendChild(btn); });
+}
+async function sendQuestion(){
+  const inp=G('qaInp'); const q=inp.value.trim(); if(!q)return;
+  inp.value=''; inp.style.height='auto';
+  const sn=STEPS[cur].title;
+  appendQAMsg('user',q); const tid='qt-'+Date.now();
+  appendQAMsg('coach','<div class="dots"><span></span><span></span><span></span></div>',tid);
+  G('qaSendBtn').disabled=true;
+  try{
+    const resp=await fetch('https://bluebird-dashboard-zeta.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS+'\n\nStep '+(cur+1)+': "'+sn+'".',messages:[...qaHistory.slice(-4).map(i=>([{role:'user',content:i.q},{role:'assistant',content:i.a}])).flat(),{role:'user',content:q}]})});
+    const data=await resp.json();
+    const ans=data.content?.[0]?.text||'Great question — try rephrasing for a clearer answer.';
+    document.getElementById(tid)?.querySelector('.qa-msg-body')&&(document.getElementById(tid).querySelector('.qa-msg-body').innerHTML=ans);
+    qaHistory.push({q,a:ans,step:sn}); updateQAHistory();
+    const prev=G('coachLine').innerHTML; G('coachLine').innerHTML=ans.length>90?ans.substring(0,90)+'…':ans;
+    setTimeout(()=>{G('coachLine').innerHTML=prev;},9000);
+  }catch(e){ document.getElementById(tid)?.querySelector('.qa-msg-body')&&(document.getElementById(tid).querySelector('.qa-msg-body').textContent='Connection issue — try again.'); }
+  G('qaSendBtn').disabled=false;
+}
+function appendQAMsg(role,html,id){
+  const msgs=G('qaMessages'); const d=document.createElement('div');
+  d.className='qa-msg '+role; if(id)d.id=id;
+  d.innerHTML='<div class="qa-msg-av '+role+'">'+(role==='coach'?'🐦':'E')+'</div><div class="qa-msg-body">'+html+'</div>';
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+function updateQAHistory(){
+  const el=G('qaHistory');
+  if(!qaHistory.length){el.innerHTML='<div class="sb-qa-empty">No questions yet</div>';return;}
+  el.innerHTML='';
+  qaHistory.slice(-4).reverse().forEach(item=>{
+    const d=document.createElement('div'); d.className='sb-qa-item'; d.title=item.q;
+    d.innerHTML='<div class="sb-qa-q">'+item.q+'</div><div class="sb-qa-meta">'+item.step+'</div>';
+    d.onclick=()=>{openQA();appendQAMsg('user',item.q);appendQAMsg('coach',item.a);};
+    el.appendChild(d);
+  });
+}
+init();
+</script>
+</body>
+</html>
