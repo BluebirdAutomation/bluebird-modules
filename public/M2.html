@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make.com First Automation · Bluebird Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0B0C10; --s1:#12141A; --s2:#181B23; --s3:#1F222C;
+  --b1:#252830; --b2:#2E3340; --b3:#3A3F50;
+  --t1:#EFF1F7; --t2:#8C93AA; --t3:#4E5568;
+  --make:#7C3AED; --make2:#6D28D9; --make-l:#A78BFA;
+  --make-a:rgba(124,58,237,0.12); --make-b:rgba(124,58,237,0.06);
+  --green:#34D399; --green-a:rgba(52,211,153,0.1);
+  --green-b:rgba(52,211,153,0.06);
+  --yellow:#FBBF24; --yellow-a:rgba(251,191,36,0.1);
+  --red:#F87171; --red-a:rgba(248,113,113,0.08);
+  --orange:#F97316; --orange-a:rgba(249,115,22,0.1);
+  --emma:#FF7BAC; --emma-a:rgba(255,123,172,0.12);
+  --dan:#5B8DEE; --dan-a:rgba(91,141,238,0.12);
+  --qa:#A78BFA; --qa-a:rgba(167,139,250,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--t1);font-family:'Sora',sans-serif;font-size:13px;}
+
+/* ── LAYOUT ── */
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.body{display:grid;grid-template-columns:280px 1fr;flex:1;overflow:hidden;min-height:0;}
+
+/* ── MOBILE ── */
+@media(max-width:700px){
+  html,body{overflow:auto;height:auto;}
+  .shell{height:auto;overflow:visible;}
+  .body{grid-template-columns:1fr;overflow:visible;}
+  .sidebar{display:none;}
+  .main{overflow:visible;}
+  .browser{margin:8px;flex:none;height:auto;}
+  .make-ui{height:auto;min-height:0;}
+  .make-body{flex-direction:column;}
+  .make-nav{width:100%;display:flex;flex-direction:row;overflow-x:auto;padding:4px 6px;gap:2px;border-right:none;border-bottom:1px solid rgba(124,58,237,.15);}
+  .make-nav::-webkit-scrollbar{display:none;}
+  .m-nav-item{padding:6px 10px;font-size:11px;border-left:none;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;}
+  .m-nav-item.active{border-bottom-color:var(--make-l);background:transparent;}
+  .make-content{padding:12px;}
+  .node-row{flex-wrap:wrap;justify-content:center;gap:10px;padding:12px 8px;}
+  .connector,.connector-arrow{display:none;}
+  .node-wrap{flex-direction:row!important;align-items:center;gap:7px;}
+  .node-wrap .node-label,.node-wrap .node-sublabel{text-align:left;max-width:none;}
+  .node-icon{width:40px;height:40px;font-size:17px;}
+  .run-bar{flex-wrap:wrap;gap:6px;padding:8px 10px;}
+  .run-status{font-size:10px;width:100%;order:3;margin-top:2px;}
+  .toggle-area{margin-left:0;}
+  .ops-counter{font-size:10px;padding:3px 7px;}
+  .builder-header{flex-wrap:wrap;gap:6px;}
+  .mapping-panel .mapping-row{flex-wrap:wrap;gap:3px;}
+  .mapping-value{width:100%;font-size:10px;}
+  .mapping-field{font-size:10px;width:100%;}
+  .schedule-options{gap:4px;}
+  .schedule-opt{font-size:10px;padding:4px 8px;}
+  .qa-drawer{width:100%;top:auto;height:85vh;border-radius:16px 16px 0 0;transform:translateY(100%)!important;border-left:none;border-top:1px solid var(--b2);}
+  .qa-drawer.open{transform:translateY(0)!important;}
+  .mobile-bottom-bar{display:flex;}
+  .coach{padding:10px 12px;min-height:auto;}
+  .coach-av{width:32px;height:32px;font-size:15px;}
+  .coach-text{font-size:12px;}
+  .topbar{padding:0 12px;}
+  .tb-title{font-size:12px;}
+  .tb-crumb{display:none;}
+  .modal{width:calc(100vw - 32px);}
+  .modal-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}
+
+/* ── MOBILE BOTTOM BAR ── */
+.mobile-bottom-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:80;background:var(--s1);border-top:1px solid var(--b1);padding:8px 12px;gap:8px;align-items:center;}
+.mbb-steps-btn{flex:1;padding:8px 12px;background:var(--make-a);border:1px solid rgba(124,58,237,.3);border-radius:8px;font-size:12px;font-weight:600;color:var(--make-l);font-family:'Sora',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center;}
+.mbb-qa-btn{padding:8px 14px;background:var(--qa-a);border:1px solid rgba(167,139,250,.3);border-radius:8px;font-size:12px;font-weight:600;color:var(--qa);font-family:'Sora',sans-serif;cursor:pointer;}
+.mbb-progress{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+@media(max-width:700px){.body{padding-bottom:60px;}}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-logo{width:28px;height:28px;background:var(--make);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.tb-title{font-weight:600;font-size:13px;}
+.tb-crumb{font-size:11px;color:var(--t3);margin-left:2px;}
+.pips{display:flex;gap:3px;}
+.pip{height:3px;width:14px;border-radius:3px;background:var(--b2);transition:all .35s;}
+.pip.done{background:var(--green);}
+.pip.now{background:var(--make);width:26px;}
+.pip-label{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
+.sb-head{padding:14px 16px;border-bottom:1px solid var(--b1);}
+.sb-mod{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--make-l);margin-bottom:3px;}
+.sb-head-title{font-weight:600;font-size:13px;margin-bottom:2px;}
+.sb-head-sub{font-size:11px;color:var(--t3);}
+.sb-steps{padding:8px 0;overflow-y:auto;flex:1;}
+.sb-step{display:flex;gap:10px;align-items:flex-start;padding:9px 16px;cursor:pointer;position:relative;border-left:2px solid transparent;transition:all .15s;}
+.sb-step:hover{background:var(--s2);}
+.sb-step.active{background:var(--s2);border-left-color:var(--make);}
+.sb-step.done{opacity:.5;}
+.sb-step.done:hover{opacity:.8;}
+.sb-n{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t3);flex-shrink:0;transition:all .2s;font-family:'JetBrains Mono',monospace;}
+.sb-step.active .sb-n{border-color:var(--make);color:var(--make-l);background:var(--make-a);}
+.sb-step.done .sb-n{border-color:var(--green);color:var(--green);background:var(--green-a);}
+.sb-info{flex:1;}
+.sb-name{font-weight:500;font-size:12px;margin-bottom:1px;}
+.sb-desc{font-size:10px;color:var(--t3);line-height:1.4;}
+.sb-line{position:absolute;left:26px;top:32px;bottom:-9px;width:1px;background:var(--b1);}
+.sb-step:last-child .sb-line{display:none;}
+
+/* GLOSSARY in sidebar */
+.sb-glossary{border-top:1px solid var(--b1);padding:12px 16px;flex-shrink:0;}
+.sb-gloss-title{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.gloss-item{padding:5px 0;border-bottom:1px solid var(--b1);cursor:pointer;}
+.gloss-item:last-child{border-bottom:none;}
+.gloss-term{font-size:11px;font-weight:600;color:var(--make-l);margin-bottom:1px;}
+.gloss-def{font-size:10px;color:var(--t3);line-height:1.5;display:none;}
+.gloss-item.open .gloss-def{display:block;}
+
+/* QA history */
+.sb-qa-sec{border-top:1px solid var(--b1);padding:10px 16px;flex-shrink:0;}
+.sb-qa-title{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;}
+.sb-qa-item{padding:6px 8px;border-radius:6px;background:var(--s2);border:1px solid var(--b1);margin-bottom:4px;cursor:pointer;transition:all .15s;}
+.sb-qa-item:hover{border-color:var(--qa);}
+.sb-qa-q{font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-qa-empty{font-size:11px;color:var(--t3);font-style:italic;}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;overflow:hidden;position:relative;}
+
+/* ── COACH ── */
+.coach{background:var(--s1);border-bottom:1px solid var(--b1);padding:12px 16px;display:flex;gap:12px;align-items:flex-start;flex-shrink:0;min-height:96px;}
+.coach-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.coach-av.dan{background:var(--dan-a);border:1.5px solid var(--dan);}
+.coach-av.emma{background:var(--emma-a);border:1.5px solid var(--emma);}
+.coach-av.qa{background:var(--qa-a);border:1.5px solid var(--qa);}
+.coach-body{flex:1;min-width:0;}
+.coach-name{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+.coach-name.dan{color:var(--dan);}
+.coach-name.emma{color:var(--emma);}
+.coach-name.qa{color:var(--qa);}
+.coach-text{font-size:13px;color:var(--t2);line-height:1.6;}
+.coach-text strong{color:var(--t1);}
+.coach-text em{color:var(--yellow);font-style:normal;}
+.coach-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center;}
+.c-btn{padding:6px 13px;border-radius:7px;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.c-btn-primary{background:var(--make);color:white;}
+.c-btn-primary:hover{background:var(--make2);}
+.c-btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.c-btn-ghost{background:transparent;border:1px solid var(--b2);color:var(--t3);}
+.c-btn-ghost:hover{color:var(--t2);}
+.c-btn-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.c-btn-qa{background:var(--qa-a);color:var(--qa);border:1px solid rgba(167,139,250,.3);margin-left:auto;}
+.c-btn-qa:hover{background:rgba(167,139,250,.18);}
+.dots{display:inline-flex;gap:4px;align-items:center;}
+.dots span{width:5px;height:5px;border-radius:50%;background:var(--t3);animation:dot .8s infinite;}
+.dots span:nth-child(2){animation-delay:.15s;}
+.dots span:nth-child(3){animation-delay:.3s;}
+@keyframes dot{0%,80%,100%{transform:scale(.6);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+
+/* ── Q&A DRAWER ── */
+.qa-drawer{position:absolute;top:0;right:0;bottom:0;width:360px;background:var(--s1);border-left:1px solid var(--b2);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.34,1.2,.64,1);z-index:60;box-shadow:-12px 0 32px rgba(0,0,0,.4);}
+.qa-drawer.open{transform:translateX(0);}
+.qa-head{padding:14px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;}
+.qa-badge{width:7px;height:7px;border-radius:50%;background:var(--qa);animation:qaPulse 2s infinite;}
+@keyframes qaPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.qa-title{font-weight:600;font-size:13px;}
+.qa-sub{font-size:11px;color:var(--t3);}
+.qa-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--b2);background:transparent;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;}
+.qa-close:hover{background:var(--s2);color:var(--t2);}
+.qa-ctx{margin:10px 14px 0;padding:7px 10px;background:var(--s2);border:1px solid var(--b2);border-radius:7px;font-size:11px;color:var(--t3);display:flex;align-items:center;gap:6px;}
+.qa-ctx strong{color:var(--t2);}
+.qa-suggested{padding:8px 14px;display:flex;flex-direction:column;gap:4px;}
+.qa-suggest-lbl{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:3px;}
+.qa-suggest-btn{padding:7px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:7px;font-size:11px;color:var(--t2);cursor:pointer;text-align:left;font-family:'Sora',sans-serif;transition:all .15s;line-height:1.4;}
+.qa-suggest-btn:hover{border-color:var(--qa);color:var(--qa);}
+.qa-msgs{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:10px;}
+.qa-msg{display:flex;gap:8px;animation:fadeUp .2s ease;}
+.qa-msg.user{flex-direction:row-reverse;}
+.qa-msg-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;}
+.qa-msg-av.coach{background:var(--qa-a);border:1.5px solid var(--qa);}
+.qa-msg-av.user{background:var(--s3);color:var(--t2);}
+.qa-msg-body{max-width:85%;padding:8px 11px;border-radius:10px;font-size:12px;line-height:1.6;}
+.qa-msg.coach .qa-msg-body{background:var(--s2);color:var(--t2);border:1px solid var(--b1);}
+.qa-msg.user .qa-msg-body{background:var(--make);color:white;}
+.qa-inp-row{padding:10px 14px;border-top:1px solid var(--b1);display:flex;gap:8px;align-items:flex-end;}
+.qa-inp{flex:1;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:8px 10px;font-family:'Sora',sans-serif;font-size:12px;color:var(--t1);outline:none;resize:none;min-height:36px;max-height:100px;line-height:1.5;transition:border-color .2s;}
+.qa-inp:focus{border-color:var(--qa);}
+.qa-inp::placeholder{color:var(--t3);}
+.qa-send{width:32px;height:32px;background:var(--qa);border:none;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s;}
+.qa-send:hover{background:#8B5CF6;}
+.qa-send:disabled{opacity:.35;cursor:not-allowed;}
+
+/* ── BROWSER ── */
+.browser{flex:1;display:flex;flex-direction:column;margin:12px;border:1px solid var(--b2);border-radius:10px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.5);min-height:0;}
+.bbar{background:var(--s2);border-bottom:1px solid var(--b1);padding:6px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.bdots{display:flex;gap:4px;}
+.bdot{width:9px;height:9px;border-radius:50%;}
+.bd1{background:#F87171;}.bd2{background:#FBBF24;}.bd3{background:#34D399;}
+.burl{flex:1;background:var(--s3);border-radius:5px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);transition:all .3s;}
+.burl.flash{color:var(--t2);background:var(--b1);}
+
+/* ── MAKE UI ── */
+.make-ui{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#0F0B1E;}
+.make-topbar{background:#17102E;border-bottom:1px solid rgba(124,58,237,.25);height:40px;display:flex;align-items:center;gap:0;padding:0 14px;flex-shrink:0;}
+.make-logo{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px;color:white;margin-right:16px;}
+.make-logo-mark{width:22px;height:22px;background:var(--make);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.m-tab{padding:0 12px;height:40px;display:flex;align-items:center;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
+.m-tab:hover{color:rgba(255,255,255,.7);}
+.m-tab.active{color:white;border-bottom-color:var(--make-l);}
+.make-body{flex:1;display:flex;overflow:hidden;}
+.make-nav{width:190px;background:#120D25;border-right:1px solid rgba(124,58,237,.15);flex-shrink:0;padding-top:8px;}
+.m-nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;transition:all .15s;border-left:2px solid transparent;position:relative;}
+.m-nav-item:hover{background:rgba(124,58,237,.08);color:rgba(255,255,255,.7);}
+.m-nav-item.active{background:var(--make-a);color:white;border-left-color:var(--make-l);}
+.m-nav-item.hl{background:rgba(124,58,237,.18);color:white;border-left-color:var(--make-l);animation:navHl 1.2s infinite;}
+@keyframes navHl{0%,100%{background:rgba(124,58,237,.18);}50%{background:rgba(124,58,237,.3);}}
+.make-content{flex:1;overflow-y:auto;padding:18px;}
+
+/* VIEWS */
+.v-dash{}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.dash-title{font-weight:600;font-size:14px;}
+.create-btn{padding:7px 14px;background:var(--make);color:white;border:none;border-radius:7px;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;position:relative;transition:all .15s;}
+.create-btn:hover{background:var(--make2);}
+.create-btn.hl{animation:btnGlow 1.2s infinite;}
+@keyframes btnGlow{0%,100%{box-shadow:0 0 0 3px rgba(124,58,237,.4);}50%{box-shadow:0 0 0 7px rgba(124,58,237,.15);}}
+.empty-state{text-align:center;padding:36px 20px;}
+.empty-icon{font-size:38px;margin-bottom:10px;}
+.empty-title{font-weight:600;font-size:14px;margin-bottom:5px;}
+.empty-sub{font-size:12px;color:var(--t3);max-width:240px;margin:0 auto;line-height:1.5;}
+
+/* BUILDER */
+.builder-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.builder-title{font-weight:600;font-size:13px;color:var(--t1);}
+.ops-counter{display:flex;align-items:center;gap:6px;padding:4px 10px;background:var(--make-a);border:1px solid rgba(124,58,237,.3);border-radius:6px;font-size:11px;color:var(--make-l);}
+.ops-counter strong{color:white;}
+.scenario-canvas{background:#0A081A;border:1px solid rgba(124,58,237,.2);border-radius:10px;min-height:180px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:10px;}
+.canvas-hint{text-align:center;color:var(--t3);}
+.canvas-hint-icon{font-size:26px;margin-bottom:8px;}
+.canvas-hint-text{font-size:12px;line-height:1.5;}
+
+/* NODES */
+.node-row{display:flex;align-items:center;gap:0;padding:20px;flex-wrap:nowrap;justify-content:center;}
+.node-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;}
+.node-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all .2s;border:2px solid transparent;position:relative;}
+.node-icon.trigger{background:#1C1040;border-color:rgba(124,58,237,.4);}
+.node-icon.action{background:#0F1835;border-color:rgba(91,141,238,.35);}
+.node-icon.add-btn{background:#151228;border:1.5px dashed rgba(255,255,255,.15);color:var(--t3);font-size:18px;}
+.node-icon:hover{transform:scale(1.04);}
+.node-icon.hl{border-color:var(--make-l)!important;box-shadow:0 0 0 4px rgba(124,58,237,.25);animation:nodeGlow 1.2s infinite;}
+@keyframes nodeGlow{0%,100%{box-shadow:0 0 0 4px rgba(124,58,237,.25);}50%{box-shadow:0 0 0 8px rgba(124,58,237,.08);}}
+.node-icon.connected{border-color:rgba(52,211,153,.6)!important;box-shadow:0 0 0 3px rgba(52,211,153,.15);}
+.node-label{font-size:10px;color:var(--t3);text-align:center;max-width:64px;line-height:1.35;}
+.node-label.lit{color:var(--t2);}
+.node-sublabel{font-size:9px;color:var(--t3);text-align:center;max-width:64px;}
+.connector{width:28px;height:2px;margin:0;margin-top:-27px;background:rgba(124,58,237,.3);flex-shrink:0;transition:all .4s;}
+.connector.live{background:var(--make-l);animation:flowLine 1.5s infinite;}
+@keyframes flowLine{0%,100%{opacity:1;}50%{opacity:.5;}}
+.connector-arrow{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid rgba(124,58,237,.5);margin-top:-31px;flex-shrink:0;}
+.connector-arrow.live{border-left-color:var(--make-l);}
+
+/* RUN BAR */
+.run-bar{background:#17102E;border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.run-btn{padding:6px 14px;background:var(--make);color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;transition:all .15s;position:relative;}
+.run-btn.hl{animation:btnGlow 1.2s infinite;}
+.run-btn:hover{background:var(--make2);}
+.run-status{font-size:11px;color:var(--t3);flex:1;}
+.run-status.running{color:var(--yellow);}
+.run-status.success{color:var(--green);}
+.toggle-area{display:flex;align-items:center;gap:7px;}
+.toggle{width:34px;height:18px;background:var(--b2);border-radius:18px;cursor:pointer;position:relative;transition:background .3s;}
+.toggle.on{background:var(--make);}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:white;transition:left .3s;}
+.toggle.on::after{left:18px;}
+.toggle-lbl{font-size:11px;color:var(--t3);}
+.toggle-lbl.on{color:var(--green);}
+
+/* WARNING + TIP CARDS */
+.warn-card{background:var(--red-a);border:1px solid rgba(248,113,113,.25);border-left:3px solid var(--red);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:10px;}
+.warn-card strong{color:var(--red);}
+.tip-card{background:var(--yellow-a);border:1px solid rgba(251,191,36,.2);border-left:3px solid var(--yellow);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:10px;}
+.tip-card strong{color:var(--yellow);}
+.info-card{background:var(--make-b);border:1px solid rgba(124,58,237,.2);border-left:3px solid var(--make-l);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:10px;}
+.info-card strong{color:var(--make-l);}
+.success-card{background:var(--green-b);border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:10px;}
+.success-card strong{color:var(--green);}
+
+/* APP PICKER MODAL */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:30;}
+.modal{background:#1A1332;border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:18px;width:310px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.modal-title{font-weight:600;font-size:13px;}
+.modal-search{width:100%;background:#120D25;border:1px solid rgba(124,58,237,.2);border-radius:7px;padding:7px 11px;font-family:'Sora',sans-serif;font-size:12px;color:var(--t2);outline:none;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-height:200px;overflow-y:auto;}
+.app-tile{padding:9px 10px;background:#120D25;border:1px solid rgba(124,58,237,.15);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
+.app-tile:hover,.app-tile.hl{border-color:var(--make-l);background:var(--make-a);}
+.app-tile.hl{box-shadow:0 0 0 2px rgba(124,58,237,.3);}
+.app-tile-icon{font-size:17px;}
+.app-tile-name{font-size:11px;font-weight:500;color:var(--t2);}
+.app-tile.hl .app-tile-name{color:white;}
+.modal-hint{font-size:11px;color:var(--t3);line-height:1.5;}
+
+/* DATA MAPPING */
+.mapping-panel{background:#120D25;border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:12px;margin-bottom:10px;}
+.mapping-title{font-size:11px;font-weight:600;color:var(--make-l);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.mapping-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(124,58,237,.1);}
+.mapping-row:last-child{border:none;}
+.mapping-field{flex:1;font-size:11px;color:var(--t3);}
+.mapping-arrow{color:var(--make-l);font-size:12px;}
+.mapping-value{flex:1;background:#0A081A;border:1px solid rgba(124,58,237,.2);border-radius:5px;padding:4px 8px;font-size:11px;color:var(--t2);font-family:'JetBrains Mono',monospace;}
+.mapping-value.filled{border-color:rgba(52,211,153,.4);color:var(--green);}
+
+/* PULSE RING */
+.pulse{position:absolute;inset:-4px;border-radius:12px;border:2px solid var(--make-l);animation:ring 1.4s infinite;pointer-events:none;z-index:10;}
+@keyframes ring{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(124,58,237,.4);}50%{opacity:.5;box-shadow:0 0 0 6px rgba(124,58,237,0);}}
+
+/* CALLOUT ARROW */
+.callout{position:fixed;background:var(--make);color:white;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:600;white-space:nowrap;pointer-events:none;z-index:200;box-shadow:0 4px 16px rgba(124,58,237,.5);}
+.callout::after{content:'';position:absolute;border:5px solid transparent;}
+.callout.d::after{top:-10px;left:50%;transform:translateX(-50%);border-bottom-color:var(--make);}
+.callout.u::after{bottom:-10px;left:50%;transform:translateX(-50%);border-top-color:var(--make);}
+.callout.r::after{left:-10px;top:50%;transform:translateY(-50%);border-right-color:var(--make);}
+
+/* SCHEDULE PICKER */
+.schedule-panel{background:#120D25;border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:12px;margin-bottom:10px;}
+.schedule-title{font-size:11px;font-weight:600;color:var(--make-l);margin-bottom:8px;}
+.schedule-options{display:flex;gap:6px;flex-wrap:wrap;}
+.schedule-opt{padding:5px 10px;border-radius:6px;border:1px solid rgba(124,58,237,.2);background:#0A081A;font-size:11px;color:var(--t2);cursor:pointer;transition:all .15s;}
+.schedule-opt:hover,.schedule-opt.selected{border-color:var(--make-l);color:white;background:var(--make-a);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.hidden{display:none!important;}
+.fade{animation:fadeUp .2s ease;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">⚡</div>
+    <span class="tb-title">Bluebird Academy</span>
+    <span class="tb-crumb">/ Make.com · First Automation</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="pips" id="pips"></div>
+    <span class="pip-label" id="pipLabel">1 / 9</span>
+  </div>
+</div>
+
+<div class="body">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-head">
+    <div class="sb-mod">Module 2</div>
+    <div class="sb-head-title">Your First Automation</div>
+    <div class="sb-head-sub">Form → Sheets → Email · No code needed</div>
+  </div>
+  <div class="sb-steps" id="sbSteps"></div>
+
+  <div class="sb-glossary">
+    <div class="sb-gloss-title">📖 Plain-English Glossary</div>
+    <div class="gloss-item" onclick="this.classList.toggle('open')">
+      <div class="gloss-term">Scenario</div>
+      <div class="gloss-def">The whole automation from start to finish. Like a recipe — trigger + actions in order.</div>
+    </div>
+    <div class="gloss-item" onclick="this.classList.toggle('open')">
+      <div class="gloss-term">Module</div>
+      <div class="gloss-def">Each individual step in a scenario. Could be a trigger (what starts it) or an action (what it does).</div>
+    </div>
+    <div class="gloss-item" onclick="this.classList.toggle('open')">
+      <div class="gloss-term">Operation</div>
+      <div class="gloss-def">One time a module runs. Free plan = 1,000/month. A scenario with 3 modules running 100 times = 300 operations.</div>
+    </div>
+    <div class="gloss-item" onclick="this.classList.toggle('open')">
+      <div class="gloss-term">Bundle</div>
+      <div class="gloss-def">One batch of data flowing through. If 5 form submissions come in at once, that's 5 bundles.</div>
+    </div>
+    <div class="gloss-item" onclick="this.classList.toggle('open')">
+      <div class="gloss-term">Mapping</div>
+      <div class="gloss-def">Telling Make which piece of data goes where. Like copying a value from one field into another automatically.</div>
+    </div>
+    <div class="gloss-item" onclick="this.classList.toggle('open')">
+      <div class="gloss-term">Connection</div>
+      <div class="gloss-def">A saved login to an app. You connect Google once, and Make uses it forever — you never re-login.</div>
+    </div>
+  </div>
+
+  <div class="sb-qa-sec">
+    <div class="sb-qa-title">💬 Your Questions</div>
+    <div id="qaHistory"><div class="sb-qa-empty">Ask anything at any step</div></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainArea">
+
+  <div class="coach">
+    <div class="coach-av dan" id="coachAv">👨</div>
+    <div class="coach-body">
+      <div class="coach-name dan" id="coachName">Dan</div>
+      <div class="coach-text" id="coachText"><div class="dots"><span></span><span></span><span></span></div></div>
+      <div class="coach-actions" id="coachActions"></div>
+    </div>
+  </div>
+
+  <div class="browser">
+    <div class="bbar">
+      <div class="bdots"><div class="bdot bd1"></div><div class="bdot bd2"></div><div class="bdot bd3"></div></div>
+      <div class="burl" id="burl">make.com</div>
+    </div>
+
+    <div class="make-ui">
+      <div class="make-topbar">
+        <div class="make-logo"><div class="make-logo-mark">⚡</div>Make</div>
+        <div class="m-tab active">Scenarios</div>
+        <div class="m-tab">Templates</div>
+        <div class="m-tab">Connections</div>
+        <div class="m-tab">History</div>
+      </div>
+
+      <div class="make-body">
+        <div class="make-nav">
+          <div class="m-nav-item active" id="navScenarios">📋 My Scenarios</div>
+          <div class="m-nav-item" id="navCreate">➕ Create new</div>
+          <div class="m-nav-item">📦 Templates</div>
+          <div class="m-nav-item" id="navConnections">🔌 Connections</div>
+          <div class="m-nav-item">⚙️ Settings</div>
+        </div>
+
+        <div class="make-content" id="makeContent">
+
+          <!-- DASHBOARD -->
+          <div id="vDash">
+            <div class="dash-header">
+              <div class="dash-title">My Scenarios</div>
+              <button class="create-btn" id="createBtn">+ Create a scenario</button>
+            </div>
+            <div class="empty-state">
+              <div class="empty-icon">⚡</div>
+              <div class="empty-title">No scenarios yet</div>
+              <div class="empty-sub">Create your first scenario to start automating your workflow. The free plan gives you 1,000 operations per month — more than enough to learn and build.</div>
+            </div>
+          </div>
+
+          <!-- BUILDER -->
+          <div id="vBuilder" class="hidden">
+            <div class="builder-header">
+              <div class="builder-title">New Scenario · Untitled</div>
+              <div class="ops-counter" id="opsCounter">⚡ <strong>3</strong> ops/run · Free plan: 1,000/mo</div>
+            </div>
+
+            <!-- Cards area (warnings, tips, mapping appear here) -->
+            <div id="cardArea"></div>
+
+            <div class="scenario-canvas" id="scenarioCanvas">
+              <div class="canvas-hint" id="canvasHint">
+                <div class="canvas-hint-icon">⊕</div>
+                <div class="canvas-hint-text">Click the button below to add<br>your first trigger module</div>
+              </div>
+              <div class="node-row hidden" id="nodeRow"></div>
+            </div>
+
+            <div class="run-bar">
+              <button class="run-btn" id="runBtn">▶ Run once</button>
+              <span class="run-status" id="runStatus">Build your scenario above, then test it here</span>
+              <div class="toggle-area">
+                <div class="toggle" id="toggleBtn"></div>
+                <span class="toggle-lbl" id="toggleLbl">Off</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTIONS VIEW -->
+          <div id="vConnections" class="hidden fade">
+            <div class="dash-header" style="margin-bottom:14px;">
+              <div class="dash-title">Connections</div>
+              <button class="create-btn" id="addConnectionBtn">+ Add a connection</button>
+            </div>
+            <div class="info-card"><strong>What is a Connection?</strong> When you connect an app, Make saves your login securely. You authorize it once and it works across all your scenarios — no re-logging in every time.</div>
+            <div id="connectionsList">
+              <div class="empty-state" style="padding:20px;">
+                <div class="empty-icon" style="font-size:28px;">🔌</div>
+                <div class="empty-title" style="font-size:13px;">No connections yet</div>
+                <div class="empty-sub">They get added automatically when you set up your first trigger or action.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- APP PICKER MODAL -->
+          <div class="modal-overlay hidden" id="modalOverlay">
+            <div class="modal">
+              <div class="modal-title" id="modalTitle">Choose an app</div>
+              <div class="modal-hint" id="modalHint">The highlighted app is what we recommend for this step.</div>
+              <input class="modal-search" placeholder="🔍 Search 1,800+ apps…" readonly>
+              <div class="modal-grid" id="modalGrid"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A DRAWER -->
+  <div class="qa-drawer" id="qaDrawer">
+    <div class="qa-head">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="qa-badge"></div>
+        <div><div class="qa-title">Ask a Question</div><div class="qa-sub">Answered by your Bluebird coaches</div></div>
+      </div>
+      <button class="qa-close" onclick="closeQA()">✕</button>
+    </div>
+    <div class="qa-ctx"><span>📍</span><span>Context: <strong id="qaCtxTxt">Step 1</strong></span></div>
+    <div class="qa-suggested" id="qaSuggested"><div class="qa-suggest-lbl">Suggested questions</div></div>
+    <div class="qa-msgs" id="qaMsgs"></div>
+    <div class="qa-inp-row">
+      <textarea class="qa-inp" id="qaInp" placeholder="Ask anything…" rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendQ();}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+      <button class="qa-send" id="qaSendBtn" onclick="sendQ()">
+        <svg width="12" height="12" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- MOBILE BOTTOM BAR -->
+<div class="mobile-bottom-bar" id="mobileBar">
+  <button class="mbb-steps-btn" onclick="toggleMobileSteps()">☰ Steps <span id="mbbStep">1/9</span></button>
+  <span class="mbb-progress" id="mbbProgress">Step 1</span>
+  <button class="mbb-qa-btn" onclick="openQA()">💬 Ask</button>
+</div>
+
+<!-- MOBILE STEPS DRAWER -->
+<div id="mobileStepsDrawer" style="display:none;position:fixed;bottom:60px;left:0;right:0;z-index:79;background:var(--s1);border-top:1px solid var(--b2);border-radius:16px 16px 0 0;max-height:60vh;overflow-y:auto;padding:12px 0;box-shadow:0 -8px 32px rgba(0,0,0,.4);">
+  <div style="text-align:center;padding:0 0 8px;"><div style="width:32px;height:3px;background:var(--b3);border-radius:3px;margin:0 auto;"></div></div>
+  <div style="padding:0 4px;" id="mobileStepsList"></div>
+  <div style="padding:12px 16px;border-top:1px solid var(--b1);margin-top:8px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">📖 Quick Glossary</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:8px 10px;"><div style="font-size:11px;font-weight:600;color:var(--make-l);margin-bottom:2px;">Scenario</div><div style="font-size:10px;color:var(--t3);">The whole automation — trigger + actions chained together</div></div>
+      <div style="background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:8px 10px;"><div style="font-size:11px;font-weight:600;color:var(--make-l);margin-bottom:2px;">Operation</div><div style="font-size:10px;color:var(--t3);">One run of one module. Free plan = 1,000/month</div></div>
+      <div style="background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:8px 10px;"><div style="font-size:11px;font-weight:600;color:var(--make-l);margin-bottom:2px;">Trigger</div><div style="font-size:10px;color:var(--t3);">The "if" — what wakes Make up and starts the automation</div></div>
+      <div style="background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:8px 10px;"><div style="font-size:11px;font-weight:600;color:var(--make-l);margin-bottom:2px;">Mapping</div><div style="font-size:10px;color:var(--t3);">Telling Make which data goes where — like filling a form automatically</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────
+   STEPS — deeper, non-technical
+───────────────────────────────── */
+const STEPS = [
+  {
+    name: 'How Make.com works',
+    desc: 'The mental model in 60 seconds',
+    who: 'dan',
+    lines: [
+      `Hey, Dan here. Before we touch anything, I want to give you the mental model that makes all of this click. <strong>Make.com is visual plumbing.</strong> Apps are pipes, data is water, and you decide where it flows.`,
+      `No code. No spreadsheet formulas. You connect two apps by drawing a line between them — and Make handles the rest. We're going to build something you'll actually use: <em>form submission → logged to Google Sheets → email notification to you. Automatic, every time.</em>`,
+    ],
+    suggest: [
+      'How is Make different from Zapier?',
+      'Do I need to know how to code?',
+      'What can I actually automate with this?',
+      'How much does Make.com cost?',
+    ],
+    url: 'make.com',
+    target: 'navCreate', dir: 'r',
+    onClick() { showDash(); hlEl('createBtn'); },
+  },
+  {
+    name: 'The free plan explained',
+    desc: 'What 1,000 operations actually means',
+    who: 'dan',
+    lines: [
+      `Real quick before we build — the free plan gives you <strong>1,000 operations per month.</strong> An operation is one time a module runs. Our automation has 3 modules, so each form submission uses 3 operations.`,
+      `1,000 ÷ 3 = <em>333 form submissions per month for free.</em> That's plenty to learn, experiment, and run a real workflow. You only need to upgrade when your automations actually get busy — which is a good problem to have.`,
+    ],
+    suggest: [
+      'What happens when I hit the operation limit?',
+      'Which plan should I upgrade to?',
+      'Can I have multiple scenarios on the free plan?',
+      'Do operations reset monthly?',
+    ],
+    url: 'make.com/pricing',
+    target: 'createBtn', dir: 'u',
+    onClick() { showBuilder(); },
+  },
+  {
+    name: 'Add a trigger',
+    desc: 'Google Forms — what starts it all',
+    who: 'dan',
+    lines: [
+      `This is the blank scenario canvas. Every automation starts with a <strong>trigger</strong> — the thing that wakes Make up. Think of it as the "if" in "if this, then that."`,
+      `We're using <em>Google Forms</em> as our trigger. The moment someone submits your form, Make fires. Click the + button below the canvas to pick your trigger app. I'll highlight it for you.`,
+    ],
+    suggest: [
+      'What is a trigger exactly?',
+      'Can I use something other than Google Forms?',
+      'What if I want it to run on a schedule instead?',
+      'How quickly does Make detect a new submission?',
+    ],
+    url: 'make.com/scenarios/new',
+    target: 'addTriggerBtn', dir: 'd',
+    onClick() { showModal('trigger'); },
+  },
+  {
+    name: 'Connect Google Forms',
+    desc: 'Authorize once — works forever',
+    who: 'emma',
+    lines: [
+      `Emma here for this one. When you pick Google Forms, Make needs permission to read your forms. <strong>This is a one-time thing.</strong> You sign into Google, click Allow, and Make remembers that connection forever — for every scenario you ever build.`,
+      `A lot of people get nervous about this part — giving an app access to Google. <em>It's safe, it's reversible, and you can revoke it any time from your Google account settings.</em> Once it's connected, you'll see it saved under Connections in the sidebar.`,
+    ],
+    suggest: [
+      'Is it safe to connect my Google account?',
+      'What exactly can Make see in my Google account?',
+      'How do I disconnect an app later?',
+      'What if I use a work Google account?',
+    ],
+    url: 'make.com/scenarios/new',
+    target: 'triggerNodeTarget', dir: 'd',
+    onClick() { connectTrigger(); },
+  },
+  {
+    name: 'Add first action',
+    desc: 'Log to Google Sheets',
+    who: 'dan',
+    lines: [
+      `Trigger is connected. Now we tell Make what to <em>do</em> when someone submits. That's an <strong>action</strong>. You can chain as many actions as you want — there's no limit.`,
+      `First action: <strong>Google Sheets → Add a Row.</strong> Every submission will automatically append a new row with all the form data. Click the + that appeared after the trigger to add it.`,
+    ],
+    suggest: [
+      'Do I need a Google Sheet already set up?',
+      'What data from the form gets copied over?',
+      'Can I format the data before it goes to Sheets?',
+      'What is data mapping?',
+    ],
+    url: 'make.com/scenarios/new',
+    target: 'addAction1Btn', dir: 'd',
+    onClick() { showModal('action1'); },
+  },
+  {
+    name: 'Map your data',
+    desc: 'Tell Make what goes where',
+    who: 'dan',
+    lines: [
+      `This is the step that trips most beginners — <strong>data mapping.</strong> When you add the Sheets action, Make shows you the columns in your spreadsheet and you drag values from the form into them.`,
+      `Think of it like filling out a form — except the data comes from the trigger automatically. Name from the form → Name column in Sheets. Email → Email column. <em>Once mapped, it works this way every single time.</em>`,
+    ],
+    suggest: [
+      'What if my Sheets column names don\'t match the form fields?',
+      'Can I add calculated values — like today\'s date?',
+      'What is a "variable" in Make?',
+      'What happens if a form field is left blank?',
+    ],
+    url: 'make.com/scenarios/new',
+    isMapping: true,
+    onClick() { addMappingPanel(); connectAction1(); },
+  },
+  {
+    name: 'Add second action',
+    desc: 'Send yourself an email',
+    who: 'emma',
+    lines: [
+      `Second action: <strong>Gmail → Send an Email.</strong> Every time a form is submitted, you get an instant notification in your inbox. I use this for every lead form on our Bluebird site — it means I never miss a signup.`,
+      `You map it the same way — the form data flows into the email automatically. Subject line, body, recipient — all customizable. Click the + after the Sheets node to add Gmail.`,
+    ],
+    suggest: [
+      'Can I customize the email subject and body?',
+      'Can I send to multiple people?',
+      'What if I want to use a different email service?',
+      'Can I include the form answers in the email body?',
+    ],
+    url: 'make.com/scenarios/new',
+    target: 'addAction2Btn', dir: 'd',
+    onClick() { showModal('action2'); },
+  },
+  {
+    name: 'Test it — run once',
+    desc: 'Always test before going live',
+    who: 'dan',
+    lines: [
+      `Scenario is built. Before you turn it on, <strong>always run it once to test.</strong> This is the step most beginners skip — and it's the one that saves you the most headaches.`,
+      `Click <em>Run once</em>. Make will look for a recent form submission, process it through all three modules, and show you exactly what happened at each step. <em>Green = it worked. Red = something to fix.</em> If it fails, the error message tells you exactly what went wrong.`,
+    ],
+    suggest: [
+      'What if the test fails?',
+      'Where do I see what happened at each step?',
+      'What does "no bundles" mean?',
+      'Do I need to have a real form submission to test?',
+    ],
+    url: 'make.com/scenarios/new',
+    target: 'runBtn', dir: 'u',
+    onClick() { runTest(); },
+  },
+  {
+    name: 'Turn it on',
+    desc: 'Set it, forget it, let it work',
+    who: 'dan',
+    lines: [
+      `Test passed. One last thing — <strong>flip the toggle.</strong> This is what makes it automatic. Until you turn it on, Make only runs when you manually click "Run once." Once it's on, it runs every time a form is submitted. Forever.`,
+      `<em>This is what automation actually feels like.</em> You built something that works while you're in a meeting, putting the kids to bed, or sleeping. Flip it on, then go build the next one.`,
+    ],
+    suggest: [
+      'Can I pause a scenario without deleting it?',
+      'How do I get notified if something breaks?',
+      'Can I edit a scenario after it\'s turned on?',
+      'How do I see the history of past runs?',
+    ],
+    url: 'make.com/scenarios/new',
+    target: 'toggleBtn', dir: 'u',
+    onClick() { activateScenario(); },
+  },
+];
+
+/* ─────────────────────────────────
+   STATE
+───────────────────────────────── */
+let cur = 0;
+let qaHistory = [];
+
+const SYSTEM = `You are a friendly teaching assistant for Bluebird Academy, an AI automation course by Emma Freeman and Dan Guilfoil — married co-founders of Bluebird Automation.
+
+You help students learn Make.com automation. They are non-technical people learning for the first time.
+
+Dan's voice: direct, uses plain analogies, no jargon, calls out beginner mistakes proactively.
+Emma's voice: warm, personal, ties everything back to real-world time savings, mentions Bluebird use cases.
+
+Rules:
+- Keep answers SHORT: 2-4 sentences max
+- No technical jargon without an immediate plain-English explanation
+- Always be encouraging — this stuff feels hard at first
+- Reference the specific automation being built: Google Forms → Google Sheets → Gmail
+- Use "we" for Bluebird. Mention real situations (content creation, lead capture, family logistics)
+- Never be robotic or formal`;
+
+/* ─────────────────────────────────
+   INIT
+───────────────────────────────── */
+function init() {
+  buildSB();
+  buildPips();
+  buildMobileSteps();
+  goTo(0);
+  // Show mobile bar only on small screens
+  if(window.innerWidth <= 700) g('mobileBar').style.display = 'flex';
+  window.addEventListener('resize', () => {
+    g('mobileBar').style.display = window.innerWidth <= 700 ? 'flex' : 'none';
+  });
+}
+
+function buildSB() {
+  const el = g('sbSteps');
+  STEPS.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'sb-step' + (i === 0 ? ' active' : '');
+    d.id = 'sbs-' + i;
+    d.innerHTML = `<div class="sb-n" id="sbn-${i}">${i + 1}</div>
+      <div class="sb-info"><div class="sb-name">${s.name}</div><div class="sb-desc">${s.desc}</div></div>
+      ${i < STEPS.length - 1 ? '<div class="sb-line"></div>' : ''}`;
+    el.appendChild(d);
+  });
+}
+
+function buildPips() {
+  const el = g('pips');
+  STEPS.forEach((_, i) => {
+    const p = document.createElement('div');
+    p.className = 'pip' + (i === 0 ? ' now' : '');
+    p.id = 'pip-' + i;
+    el.appendChild(p);
+  });
+}
+
+/* ─────────────────────────────────
+   NAVIGATION
+───────────────────────────────── */
+function goTo(idx) {
+  cur = idx;
+  const s = STEPS[idx];
+  STEPS.forEach((_, i) => {
+    g('sbs-' + i).className = 'sb-step' + (i === idx ? ' active' : i < idx ? ' done' : '');
+    g('sbn-' + i).textContent = i < idx ? '✓' : i + 1;
+    g('pip-' + i).className = 'pip' + (i < idx ? ' done' : i === idx ? ' now' : '');
+  });
+  g('pipLabel').textContent = `${idx + 1} / ${STEPS.length}`;
+  g('qaCtxTxt').textContent = s.name;
+  // Mobile bar sync
+  if (g('mbbStep')) g('mbbStep').textContent = `${idx+1}/${STEPS.length}`;
+  if (g('mbbProgress')) g('mbbProgress').textContent = s.name.length > 16 ? s.name.substring(0,15)+'...' : s.name;
+  updateMobileSteps(idx);
+  setUrl(s.url);
+  clearHl();
+  removeCallout();
+  buildSuggested(s.suggest);
+  setCoach(s, idx);
+  g('sbs-' + idx)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  if (window.innerWidth <= 700) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function buildMobileSteps() {
+  const el = g('mobileStepsList');
+  if (!el) return;
+  STEPS.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.id = 'msbs-' + i;
+    d.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .15s;';
+    d.innerHTML = `<div id="msbn-${i}" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t3);flex-shrink:0;font-family:'JetBrains Mono',monospace;">${i+1}</div>
+      <div><div style="font-weight:500;font-size:12px;">${s.name}</div><div style="font-size:10px;color:var(--t3);">${s.desc}</div></div>`;
+    d.onclick = () => { goTo(i); closeMobileSteps(); };
+    el.appendChild(d);
+  });
+}
+
+function updateMobileSteps(idx) {
+  STEPS.forEach((_, i) => {
+    const item = g('msbs-' + i);
+    const num = g('msbn-' + i);
+    if (!item || !num) return;
+    if (i === idx) {
+      item.style.background = 'var(--s2)'; item.style.borderLeftColor = 'var(--make-l)';
+      num.style.borderColor = 'var(--make-l)'; num.style.color = 'var(--make-l)'; num.textContent = i+1;
+    } else if (i < idx) {
+      item.style.background = ''; item.style.borderLeftColor = 'transparent';
+      num.style.borderColor = 'var(--green)'; num.style.color = 'var(--green)'; num.textContent = '✓';
+    } else {
+      item.style.background = ''; item.style.borderLeftColor = 'transparent';
+      num.style.borderColor = 'var(--b2)'; num.style.color = 'var(--t3)'; num.textContent = i+1;
+    }
+  });
+}
+
+let mobileStepsOpen = false;
+function toggleMobileSteps() {
+  mobileStepsOpen = !mobileStepsOpen;
+  const d = g('mobileStepsDrawer');
+  d.style.display = mobileStepsOpen ? 'block' : 'none';
+}
+function closeMobileSteps() {
+  mobileStepsOpen = false;
+  const d = g('mobileStepsDrawer');
+  if (d) d.style.display = 'none';
+}
+
+/* ─────────────────────────────────
+   COACH
+───────────────────────────────── */
+function setCoach(s, idx) {
+  const av = g('coachAv'), nm = g('coachName'), tx = g('coachText'), ac = g('coachActions');
+  av.className = 'coach-av ' + s.who;
+  av.textContent = s.who === 'dan' ? '👨' : '👩';
+  nm.className = 'coach-name ' + s.who;
+  nm.textContent = s.who === 'dan' ? 'Dan' : 'Emma';
+  tx.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+  ac.innerHTML = '';
+  setTimeout(() => {
+    tx.innerHTML = s.lines[0];
+    const delay = Math.min(s.lines[0].replace(/<[^>]+>/g, '').length * 18, 1600);
+    setTimeout(() => {
+      tx.innerHTML = s.lines[1] || s.lines[0];
+      setTimeout(() => buildCoachActions(s, idx, ac), 350);
+    }, delay);
+  }, 500);
+}
+
+function buildCoachActions(s, idx, ac) {
+  ac.innerHTML = '';
+
+  if (s.isMapping) {
+    const btn = document.createElement('button');
+    btn.className = 'c-btn c-btn-primary';
+    btn.innerHTML = '▶ Show me data mapping';
+    btn.onclick = () => {
+      clearHl(); removeCallout();
+      s.onClick?.();
+      btn.innerHTML = '✓ Got it — continue';
+      btn.className = 'c-btn c-btn-green';
+      btn.onclick = () => { if (idx + 1 < STEPS.length) goTo(idx + 1); else complete(); };
+    };
+    ac.appendChild(btn);
+  } else if (s.target) {
+    hlEl(s.target);
+    addCallout(s.target, 'Click here to continue', s.dir);
+    const el = g(s.target);
+    if (el) el.onclick = (e) => {
+      e.stopPropagation();
+      clearHl(); removeCallout();
+      s.onClick?.();
+      setTimeout(() => idx + 1 < STEPS.length ? goTo(idx + 1) : complete(), 300);
+    };
+  }
+
+  if (idx > 0) {
+    const back = document.createElement('button');
+    back.className = 'c-btn c-btn-ghost';
+    back.textContent = '← Back';
+    back.onclick = () => { clearHl(); removeCallout(); goTo(idx - 1); };
+    ac.appendChild(back);
+  }
+
+  const ask = document.createElement('button');
+  ask.className = 'c-btn c-btn-qa';
+  ask.innerHTML = '💬 Ask a question';
+  ask.onclick = openQA;
+  ac.appendChild(ask);
+}
+
+/* ─────────────────────────────────
+   MAKE UI ACTIONS
+───────────────────────────────── */
+function showDash() {
+  show('vDash'); hide('vBuilder'); hide('vConnections');
+}
+
+function showBuilder() {
+  hide('vDash'); show('vBuilder'); hide('vConnections');
+  hide('nodeRow');
+  show('canvasHint');
+  g('cardArea').innerHTML = '';
+  g('runStatus').textContent = 'Build your scenario above, then test it here';
+  g('runStatus').className = 'run-status';
+
+  // Add a floating + button under canvas
+  let addBtn = g('addTriggerBtn');
+  if (!addBtn) {
+    addBtn = document.createElement('button');
+    addBtn.id = 'addTriggerBtn';
+    addBtn.className = 'create-btn';
+    addBtn.style.cssText = 'margin:8px auto 0;display:block;position:relative;';
+    addBtn.textContent = '+ Add trigger module';
+    g('vBuilder').appendChild(addBtn);
+  }
+  addBtn.classList.remove('hidden');
+  hlEl('addTriggerBtn');
+  addCallout('addTriggerBtn', 'Click to add your first trigger', 'd');
+
+  // Fix onclick for addTriggerBtn — steps[2] handles this
+  addBtn.onclick = (e) => {
+    e.stopPropagation();
+    clearHl(); removeCallout();
+    showModal('trigger');
+    setTimeout(() => goTo(3), 300);
+  };
+}
+
+function showModal(type) {
+  const configs = {
+    trigger: {
+      title: 'Choose your trigger app',
+      hint: '💡 The highlighted option is what we recommend for this automation.',
+      apps: [
+        { i: '📋', n: 'Google Forms', hl: true },
+        { i: '📧', n: 'Gmail' },
+        { i: '📅', n: 'Google Calendar' },
+        { i: '🐦', n: 'Twitter / X' },
+        { i: '💬', n: 'Slack' },
+        { i: '📊', n: 'Airtable' },
+      ],
+    },
+    action1: {
+      title: 'Choose your first action app',
+      hint: '💡 This is where the form data gets saved permanently.',
+      apps: [
+        { i: '📊', n: 'Google Sheets', hl: true },
+        { i: '📝', n: 'Notion' },
+        { i: '📋', n: 'Airtable' },
+        { i: '💼', n: 'HubSpot' },
+        { i: '📁', n: 'Google Drive' },
+        { i: '🗂️', n: 'Coda' },
+      ],
+    },
+    action2: {
+      title: 'Choose your second action app',
+      hint: '💡 This sends you an instant notification on every submission.',
+      apps: [
+        { i: '📧', n: 'Gmail', hl: true },
+        { i: '💬', n: 'Slack' },
+        { i: '📱', n: 'SMS / Twilio' },
+        { i: '📨', n: 'Mailchimp' },
+        { i: '🔔', n: 'Pushover' },
+        { i: '📞', n: 'WhatsApp' },
+      ],
+    },
+  };
+
+  const cfg = configs[type];
+  g('modalTitle').textContent = cfg.title;
+  g('modalHint').textContent = cfg.hint;
+  const grid = g('modalGrid');
+  grid.innerHTML = '';
+  cfg.apps.forEach(a => {
+    const t = document.createElement('div');
+    t.className = 'app-tile' + (a.hl ? ' hl' : '');
+    t.innerHTML = `<span class="app-tile-icon">${a.i}</span><span class="app-tile-name">${a.n}</span>`;
+    t.onclick = () => {
+      g('modalOverlay').classList.add('hidden');
+      if (type === 'trigger') { addTriggerNode(); goTo(3); }
+      else if (type === 'action1') { addAction1(); goTo(5); }
+      else if (type === 'action2') { addAction2(); goTo(7); }
+    };
+    grid.appendChild(t);
+  });
+  g('modalOverlay').classList.remove('hidden');
+  // Close on overlay click
+  g('modalOverlay').onclick = (e) => { if (e.target === g('modalOverlay')) g('modalOverlay').classList.add('hidden'); };
+}
+
+function addTriggerNode() {
+  hide('canvasHint');
+  show('nodeRow');
+  const nr = g('nodeRow');
+  nr.innerHTML = `
+    <div class="node-wrap">
+      <div class="node-icon trigger" id="triggerNodeTarget" style="position:relative;">📋</div>
+      <div class="node-label lit">Google Forms</div>
+      <div class="node-sublabel">New submission</div>
+    </div>
+    <div class="connector"></div><div class="connector-arrow"></div>
+    <div class="node-wrap">
+      <div class="node-icon add-btn" id="addAction1Btn" style="position:relative;">＋</div>
+      <div class="node-label">Add action</div>
+    </div>`;
+
+  // Show connection warning card
+  g('cardArea').innerHTML = `
+    <div class="info-card"><strong>Next: Connect your Google account.</strong> Make will ask you to sign in to Google and grant permission to read your forms. This is a one-time step — saved under Connections once done.</div>`;
+
+  g('addTriggerBtn')?.classList.add('hidden');
+
+  // Wire addAction1Btn for step 4
+  g('addAction1Btn').onclick = (e) => { e.stopPropagation(); showModal('action1'); };
+}
+
+function connectTrigger() {
+  const node = g('triggerNodeTarget');
+  if (node) node.classList.add('connected');
+  g('cardArea').innerHTML = `
+    <div class="success-card"><strong>✓ Google Forms connected.</strong> Make can now detect new submissions. You can find and manage this connection anytime under Connections in the sidebar.</div>
+    <div class="tip-card"><strong>💡 Tip:</strong> Make sure your Google Form actually has at least one test submission before you run the scenario — otherwise Make will say "no bundles found" and it won't have any data to process.</div>`;
+  hlEl('addAction1Btn');
+  addCallout('addAction1Btn', 'Click to add your Sheets action', 'd');
+}
+
+function addAction1() {
+  const nr = g('nodeRow');
+  nr.innerHTML = `
+    <div class="node-wrap">
+      <div class="node-icon trigger connected">📋</div>
+      <div class="node-label lit">Google Forms</div>
+      <div class="node-sublabel">New submission</div>
+    </div>
+    <div class="connector live"></div><div class="connector-arrow live"></div>
+    <div class="node-wrap">
+      <div class="node-icon action" id="sheets-node" style="position:relative;">📊</div>
+      <div class="node-label lit">Google Sheets</div>
+      <div class="node-sublabel">Add a row</div>
+    </div>
+    <div class="connector"></div><div class="connector-arrow"></div>
+    <div class="node-wrap">
+      <div class="node-icon add-btn" id="addAction2Btn" style="position:relative;">＋</div>
+      <div class="node-label">Add action</div>
+    </div>`;
+  g('addAction2Btn').onclick = (e) => { e.stopPropagation(); showModal('action2'); };
+}
+
+function addMappingPanel() {
+  g('cardArea').innerHTML = `
+    <div class="mapping-panel">
+      <div class="mapping-title">🗂️ Data Mapping — Google Sheets · Add a Row</div>
+      <div class="mapping-row">
+        <div class="mapping-field">📋 Name (from form)</div>
+        <div class="mapping-arrow">→</div>
+        <div class="mapping-value filled">Column A: Name</div>
+      </div>
+      <div class="mapping-row">
+        <div class="mapping-field">📋 Email (from form)</div>
+        <div class="mapping-arrow">→</div>
+        <div class="mapping-value filled">Column B: Email</div>
+      </div>
+      <div class="mapping-row">
+        <div class="mapping-field">📋 Message (from form)</div>
+        <div class="mapping-arrow">→</div>
+        <div class="mapping-value filled">Column C: Message</div>
+      </div>
+      <div class="mapping-row">
+        <div class="mapping-field">🕐 Submitted at</div>
+        <div class="mapping-arrow">→</div>
+        <div class="mapping-value filled">Column D: Timestamp</div>
+      </div>
+    </div>
+    <div class="tip-card"><strong>💡 Mapping tip:</strong> The purple "pill" labels are variables — they pull live data from the trigger. Drag any pill into any field. If a form field is blank when submitted, that cell will just be empty — no errors.</div>`;
+}
+
+function connectAction1() {
+  const sn = g('sheets-node');
+  if (sn) sn.classList.add('connected');
+  hlEl('addAction2Btn');
+  addCallout('addAction2Btn', 'Now add the Gmail action', 'd');
+}
+
+function addAction2() {
+  const nr = g('nodeRow');
+  nr.innerHTML = `
+    <div class="node-wrap">
+      <div class="node-icon trigger connected">📋</div>
+      <div class="node-label lit">Google Forms</div>
+      <div class="node-sublabel">New submission</div>
+    </div>
+    <div class="connector live"></div><div class="connector-arrow live"></div>
+    <div class="node-wrap">
+      <div class="node-icon action connected">📊</div>
+      <div class="node-label lit">Google Sheets</div>
+      <div class="node-sublabel">Add a row</div>
+    </div>
+    <div class="connector live"></div><div class="connector-arrow live"></div>
+    <div class="node-wrap">
+      <div class="node-icon action" id="gmail-node" style="position:relative;">📧</div>
+      <div class="node-label lit">Gmail</div>
+      <div class="node-sublabel">Send email</div>
+    </div>`;
+
+  g('cardArea').innerHTML = `
+    <div class="warn-card"><strong>⚠️ Common mistake:</strong> Don't forget to map the form data into your email body. If you skip this, you'll get a notification but it won't tell you what the person actually submitted. Use the purple pill variables to include their name, email, and message automatically.</div>`;
+
+  hlEl('runBtn');
+  addCallout('runBtn', 'Build complete — click to test', 'u');
+}
+
+function runTest() {
+  clearHl(); removeCallout();
+  g('runStatus').textContent = 'Running…';
+  g('runStatus').className = 'run-status running';
+
+  const gn = g('gmail-node');
+  if (gn) gn.classList.add('connected');
+
+  // Show running state on all nodes briefly
+  setTimeout(() => {
+    g('cardArea').innerHTML = `
+      <div class="success-card">
+        <strong>✓ Scenario ran successfully — 1 bundle processed</strong><br><br>
+        📋 Google Forms: 1 new submission detected (dan@bluebirdautomation.com, "Interested in the course")<br>
+        📊 Google Sheets: Row added to "Bluebird Leads" spreadsheet<br>
+        📧 Gmail: Notification email sent to info@bluebirdautomationco.com
+      </div>
+      <div class="info-card"><strong>What to check:</strong> Open your Google Sheet and confirm the row appeared. Check your inbox for the notification email. If both are there, your automation is working perfectly.</div>`;
+    g('runStatus').textContent = '✓ Success — 1 bundle processed, 3 operations used';
+    g('runStatus').className = 'run-status success';
+
+    hlEl('toggleBtn');
+    addCallout('toggleBtn', 'Turn it on to run automatically', 'u');
+    g('toggleBtn').onclick = (e) => {
+      e.stopPropagation(); clearHl(); removeCallout();
+      activateScenario();
+      setTimeout(() => goTo(8), 300);
+    };
+  }, 2000);
+}
+
+function activateScenario() {
+  g('toggleBtn').classList.add('on');
+  g('toggleLbl').textContent = 'Active';
+  g('toggleLbl').className = 'toggle-lbl on';
+  g('cardArea').innerHTML = `
+    <div class="success-card">
+      <strong>🎉 Automation is live!</strong><br>
+      Every new Google Form submission will now automatically be logged to Google Sheets and send you an email — with zero effort from you. This automation uses 3 operations per run.
+    </div>`;
+  setTimeout(complete, 600);
+}
+
+/* ─────────────────────────────────
+   Q&A
+───────────────────────────────── */
+function openQA() { g('qaDrawer').classList.add('open'); g('qaInp').focus(); }
+function closeQA() { g('qaDrawer').classList.remove('open'); }
+
+function buildSuggested(qs) {
+  const el = g('qaSuggested');
+  el.innerHTML = '<div class="qa-suggest-lbl">Suggested questions</div>';
+  (qs || []).forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'qa-suggest-btn';
+    b.textContent = q;
+    b.onclick = () => { g('qaInp').value = q; sendQ(); };
+    el.appendChild(b);
+  });
+}
+
+async function sendQ() {
+  const inp = g('qaInp');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  inp.style.height = 'auto';
+  appendQAMsg('user', q);
+  const tid = 'qt-' + Date.now();
+  appendQAMsg('coach', '<div class="dots"><span></span><span></span><span></span></div>', tid);
+  g('qaSendBtn').disabled = true;
+
+  const ctx = `Student is on Step ${cur + 1}: "${STEPS[cur].name}". ${STEPS[cur].desc}. Building a Google Forms → Google Sheets → Gmail automation.`;
+
+  try {
+    const r = await fetch('https://bluebird-dashboard-zeta.vercel.app/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM + '\n\nCurrent step context: ' + ctx,
+        messages: [
+          ...qaHistory.slice(-4).map(x => ([
+            { role: 'user', content: x.q },
+            { role: 'assistant', content: x.a }
+          ])).flat(),
+          { role: 'user', content: q }
+        ]
+      })
+    });
+    const d = await r.json();
+    const a = d.content?.[0]?.text || 'Good question — try rephrasing and I\'ll give you a better answer!';
+    const el = document.getElementById(tid);
+    if (el) el.querySelector('.qa-msg-body').innerHTML = a;
+    qaHistory.push({ q, a, step: STEPS[cur].name });
+    updateQAHistory();
+    flashCoach(a);
+  } catch (e) {
+    const el = document.getElementById(tid);
+    if (el) el.querySelector('.qa-msg-body').textContent = 'Connection issue — try again in a moment!';
+  }
+  g('qaSendBtn').disabled = false;
+}
+
+function appendQAMsg(role, html, id) {
+  const msgs = g('qaMsgs');
+  const d = document.createElement('div');
+  d.className = 'qa-msg ' + role;
+  if (id) d.id = id;
+  d.innerHTML = `<div class="qa-msg-av ${role === 'coach' ? 'coach' : 'user'}">${role === 'coach' ? '⚡' : 'D'}</div><div class="qa-msg-body">${html}</div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function updateQAHistory() {
+  const el = g('qaHistory');
+  if (!qaHistory.length) { el.innerHTML = '<div class="sb-qa-empty">Ask anything at any step</div>'; return; }
+  el.innerHTML = '';
+  qaHistory.slice(-3).reverse().forEach(x => {
+    const d = document.createElement('div');
+    d.className = 'sb-qa-item';
+    d.title = x.q;
+    d.innerHTML = `<div class="sb-qa-q">${x.q}</div>`;
+    d.onclick = () => { openQA(); appendQAMsg('user', x.q); appendQAMsg('coach', x.a); };
+    el.appendChild(d);
+  });
+}
+
+function flashCoach(a) {
+  const tx = g('coachText'), nm = g('coachName'), av = g('coachAv');
+  const prev = { t: tx.innerHTML, n: nm.textContent, nc: nm.className, ac: av.className, at: av.textContent };
+  av.className = 'coach-av qa'; av.textContent = '⚡';
+  nm.className = 'coach-name qa'; nm.textContent = 'Bluebird Coach';
+  tx.innerHTML = a;
+  setTimeout(() => {
+    tx.innerHTML = prev.t; nm.textContent = prev.n;
+    nm.className = prev.nc; av.className = prev.ac; av.textContent = prev.at;
+  }, 8000);
+}
+
+/* ─────────────────────────────────
+   COMPLETE
+───────────────────────────────── */
+function complete() {
+  const tx = g('coachText'), nm = g('coachName'), av = g('coachAv'), ac = g('coachActions');
+  av.className = 'coach-av dan'; av.textContent = '🎉';
+  nm.className = 'coach-name dan'; nm.textContent = 'Dan';
+  tx.innerHTML = `<strong>Your first automation is live.</strong> Every form submission now logs itself to Sheets and emails you automatically — while you're doing literally anything else. That's what automation feels like. Go build this for real — it takes less than 20 minutes and you'll have it running today.`;
+  ac.innerHTML = '';
+  const a = document.createElement('a');
+  a.className = 'c-btn c-btn-primary'; a.href = 'https://make.com'; a.target = '_blank';
+  a.style.textDecoration = 'none'; a.textContent = '→ Open Make.com Now';
+  ac.appendChild(a);
+  const r = document.createElement('button');
+  r.className = 'c-btn c-btn-ghost'; r.textContent = '↺ Replay';
+  r.onclick = () => location.reload();
+  ac.appendChild(r);
+  const ask = document.createElement('button');
+  ask.className = 'c-btn c-btn-qa'; ask.innerHTML = '💬 Still have questions?';
+  ask.onclick = openQA;
+  ac.appendChild(ask);
+}
+
+/* ─────────────────────────────────
+   UTILS
+───────────────────────────────── */
+function g(id) { return document.getElementById(id); }
+function show(id) { g(id)?.classList.remove('hidden'); }
+function hide(id) { g(id)?.classList.add('hidden'); }
+function setUrl(u) { const e = g('burl'); e.textContent = u; e.classList.add('flash'); setTimeout(() => e.classList.remove('flash'), 700); }
+function hlEl(id) {
+  clearHl();
+  const el = g(id); if (!el) return;
+  el.classList.add('hl');
+  const ring = document.createElement('div');
+  ring.className = 'pulse'; ring.id = 'pulse-ring';
+  if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+  el.appendChild(ring);
+}
+function clearHl() {
+  document.querySelectorAll('.hl').forEach(e => e.classList.remove('hl'));
+  g('pulse-ring')?.remove();
+}
+function addCallout(tid, text, dir) {
+  removeCallout();
+  const el = g(tid); if (!el) return;
+  const r = el.getBoundingClientRect();
+  const c = document.createElement('div');
+  c.className = `callout ${dir}`; c.textContent = text; c.id = 'g-callout';
+  document.body.appendChild(c);
+  const cr = c.getBoundingClientRect();
+  let top, left;
+  if (dir === 'd') { top = r.top - cr.height - 14; left = r.left + r.width / 2 - cr.width / 2; }
+  else if (dir === 'u') { top = r.bottom + 14; left = r.left + r.width / 2 - cr.width / 2; }
+  else if (dir === 'r') { top = r.top + r.height / 2 - cr.height / 2; left = r.right + 14; }
+  c.style.top = Math.max(4, top) + 'px';
+  c.style.left = Math.max(4, Math.min(left, window.innerWidth - cr.width - 8)) + 'px';
+}
+function removeCallout() { g('g-callout')?.remove(); }
+
+init();
+</script>
+</body>
+</html>
