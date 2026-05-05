@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<!--
+  FINGERPRINT: M1 — Claude Projects | v11 | May 5 2026
+  Module teaches persistent context in AI tools using Claude Projects as the primary demo.
+  Concept reframed as universal — C7 cross-tool layer bridges to ChatGPT/Gemini/Perplexity/Grok.
+  Complete screen: 3-tab Resources (Prompt Library / Other Tools / What's Next).
+  C6 Power Prompt Library embedded (5 prompts, ROLE→CONTEXT→INPUTS→REQUEST→CLOSER format).
+  C7 Cross-Tool Comparison linked from Other Tools tab.
+  Handler 9 bug fixed (pre-existing from v10 — was missing, showComplete called directly).
+  TESTING: pass — 15/15 automated checks — May 5 2026
+  LAST_VERIFIED: 2026-05-05
+  DEPLOY: pending manual click-through review → rename to M1.html → upload to bluebird-modules
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -472,27 +484,126 @@ body{
 .v{flex:1;overflow-y:auto;}
 .v-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;gap:10px;}
 
-/* Prompt card — used in complete screen */
+/* ── RESOURCES TABS ── */
+.res-tabs{
+  display:flex;gap:2px;padding:10px 12px 0;
+  border-bottom:1px solid var(--cl-sb-b);
+  background:var(--cl-inp);flex-shrink:0;
+}
+.res-tab{
+  padding:6px 13px;border-radius:6px 6px 0 0;
+  font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;
+  color:var(--cl-txt3);background:transparent;border:none;
+  cursor:pointer;transition:all .15s;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+}
+.res-tab:hover{color:var(--cl-txt2);}
+.res-tab.active{color:var(--bb);border-bottom-color:var(--bb);background:var(--cl-bg);}
+.res-panel{display:none;padding:14px;}
+.res-panel.active{display:block;}
+
+/* Prompt card — C8 structured format */
 .prompt-card{
   background:var(--cl-inp);
   border:1px solid var(--cl-sb-b);
-  border-radius:10px;padding:12px 14px;
-  margin-bottom:8px;cursor:pointer;
+  border-radius:10px;
+  margin-bottom:8px;
   transition:all .2s;position:relative;
+  overflow:hidden;
 }
-.prompt-card:hover{border-color:var(--cl-accent);box-shadow:0 2px 8px rgba(47,123,229,.10);}
-.prompt-card-role{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--cl-accent);margin-bottom:4px;}
-.prompt-card-text{font-size:12px;color:var(--cl-txt);line-height:1.55;font-family:'JetBrains Mono',monospace;}
-.prompt-card-copy{
-  position:absolute;top:10px;right:10px;
-  padding:3px 8px;border-radius:4px;
-  font-size:10px;font-weight:600;
+.prompt-card:hover{border-color:var(--cl-accent);box-shadow:0 2px 8px rgba(47,123,229,.08);}
+.prompt-card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 12px 8px;cursor:pointer;
+  border-bottom:1px solid var(--cl-sb-b);
+}
+.prompt-card-meta{flex:1;}
+.prompt-card-role{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--cl-accent);margin-bottom:2px;}
+.prompt-card-name{font-size:12px;font-weight:600;color:var(--cl-txt);line-height:1.3;}
+.prompt-card-hint{font-size:10px;color:var(--cl-txt3);margin-top:1px;}
+.prompt-card-toggle{
+  font-size:10px;font-weight:600;color:var(--cl-txt3);
+  display:flex;align-items:center;gap:3px;flex-shrink:0;
+  transition:color .15s;
+}
+.prompt-card-toggle svg{transition:transform .2s;}
+.prompt-card.pc-open .prompt-card-toggle{color:var(--bb);}
+.prompt-card.pc-open .prompt-card-toggle svg{transform:rotate(180deg);}
+.prompt-card-body{display:none;padding:10px 12px;}
+.prompt-card.pc-open .prompt-card-body{display:block;}
+.pc-section{margin-bottom:7px;}
+.pc-sec-label{
+  font-size:9px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--cl-txt3);
+  margin-bottom:3px;display:flex;align-items:center;gap:4px;
+}
+.pc-sec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.pc-sec-text{
+  font-size:11px;font-family:'JetBrains Mono',monospace;
+  color:var(--cl-txt2);line-height:1.6;
+  background:var(--cl-sb);border-radius:6px;
+  padding:8px 9px;white-space:pre-wrap;
+}
+.pc-fill{
+  background:rgba(217,119,6,.12);color:var(--cl-accent);
+  border-radius:3px;padding:1px 3px;font-style:italic;
+}
+.prompt-card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;background:var(--cl-sb);
+  border-top:1px solid var(--cl-sb-b);
+}
+.pc-copy-btn{
+  display:flex;align-items:center;gap:4px;
+  padding:5px 11px;border-radius:6px;
+  font-size:10px;font-weight:600;font-family:'DM Sans',sans-serif;
   background:var(--bb-a);color:var(--bb);border:none;cursor:pointer;
-  opacity:0;transition:opacity .15s;
-  font-family:'DM Sans',sans-serif;
+  transition:all .15s;
 }
-.prompt-card:hover .prompt-card-copy{opacity:1;}
-.prompt-card-copy.copied{background:var(--green-a);color:var(--green);}
+.pc-copy-btn:hover{background:var(--bb);color:white;}
+.pc-copy-btn.copied{background:var(--green-a);color:var(--green);}
+.pc-hint-txt{font-size:10px;color:var(--cl-txt3);}
+
+/* Cross-tool link card */
+.tool-link-card{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 13px;background:var(--cl-inp);
+  border:1px solid var(--cl-sb-b);border-radius:10px;
+  margin-bottom:8px;text-decoration:none;
+  transition:all .2s;cursor:pointer;
+}
+.tool-link-card:hover{border-color:var(--bb);box-shadow:0 2px 8px rgba(47,123,229,.08);}
+.tool-link-icon{
+  width:34px;height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;flex-shrink:0;
+}
+.tool-link-body{flex:1;}
+.tool-link-title{font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:2px;}
+.tool-link-sub{font-size:11px;color:var(--cl-txt3);line-height:1.4;}
+.tool-link-arrow{color:var(--cl-txt3);font-size:16px;flex-shrink:0;}
+
+/* Sidebar Resources tab */
+.sb-res-tab{
+  padding:10px 16px;
+  border-top:1px solid var(--b1);
+  cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:500;color:var(--t3);
+  transition:all .15s;background:var(--s1);
+}
+.sb-res-tab:hover{background:var(--s2);color:var(--t2);}
+.sb-res-tab.active{background:var(--bb-b);color:var(--bb);font-weight:600;}
+.sb-res-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--b2);flex-shrink:0;transition:background .15s;
+}
+.sb-res-tab.active .sb-res-dot{background:var(--bb);}
+
+/* Legacy — keep for safety */
+.prompt-card-text{font-size:12px;color:var(--cl-txt);line-height:1.55;font-family:'JetBrains Mono',monospace;}
+.prompt-card-copy{display:none;}
 
 /* Form elements — claude.ai authentic */
 .cl-form{padding:18px;display:flex;flex-direction:column;gap:12px;}
@@ -837,6 +948,10 @@ body{
     <div class="sb-qa-title">💬 Your Questions</div>
     <div id="qaHistory"><div class="sb-qa-empty">No questions yet</div></div>
   </div>
+  <div class="sb-res-tab hidden" id="sbResTab" onclick="jumpToResources()">
+    <div class="sb-res-dot"></div>
+    <span>📚 Resources</span>
+  </div>
 </div>
 
 <div class="main">
@@ -1172,22 +1287,119 @@ Always: Lead with value. Short sentences.</div>
           </div>
         </div>
 
-        <!-- View: Prompt Starter Pack (complete) -->
+        <!-- View: Resources (complete) -->
         <div class="v hidden fade" id="vComplete">
-          <div style="padding:18px;">
-            <div class="info-card"><strong>Project live. 🎉</strong> Instructions baked in, knowledge file loaded. Every conversation here starts from your context automatically — zero re-explaining, ever.</div>
-            <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--cl-txt3);margin-bottom:10px;margin-top:4px;">Your Prompt Starter Pack</div>
-            <div style="font-size:12px;color:var(--cl-txt2);margin-bottom:12px;line-height:1.5;">Copy any of these into your Bluebird Content project right now. They're pre-written to work with the instructions you just set up.</div>
+          <!-- success bar -->
+          <div style="padding:12px 14px 0;">
+            <div class="info-card"><strong>Project live. 🎉</strong> Instructions baked in, knowledge file loaded. Every conversation starts from your context automatically — zero re-explaining, ever.</div>
+          </div>
+          <!-- resource tabs -->
+          <div class="res-tabs">
+            <button class="res-tab active" onclick="switchResTab('prompts',this)">📝 Prompt Library</button>
+            <button class="res-tab" onclick="switchResTab('tools',this)">🔀 Other Tools</button>
+            <button class="res-tab" onclick="switchResTab('next',this)">▶ What's Next</button>
+          </div>
+
+          <!-- PANEL: PROMPTS -->
+          <div class="res-panel active" id="res-prompts" style="overflow-y:auto;max-height:calc(100% - 130px);">
+            <div style="font-size:11px;color:var(--cl-txt3);margin-bottom:10px;line-height:1.5;">
+              Structured prompts built for Claude Projects. Each one uses the <strong style="color:var(--cl-txt2);">ROLE → CONTEXT → INPUTS → REQUEST → CLOSER</strong> format. Click to expand, customize the highlighted fields, then copy.
+            </div>
             <div id="promptCards"></div>
             <a class="open-cta" href="https://claude.ai" target="_blank">
-              <div style="font-size:22px;">🐦</div>
+              <div style="font-size:20px;">🐦</div>
               <div>
-                <div class="open-cta-title">Open Claude &amp; start your project →</div>
-                <div class="open-cta-sub">Takes less than 5 minutes. Your instructions are ready to paste.</div>
+                <div class="open-cta-title">Open Claude &amp; use these prompts →</div>
+                <div class="open-cta-sub">Paste any prompt into your new project to get started.</div>
               </div>
-              <div style="margin-left:auto;color:var(--cl-accent);font-size:18px;">›</div>
+              <div style="margin-left:auto;color:var(--cl-accent);font-size:16px;">›</div>
             </a>
           </div>
+
+          <!-- PANEL: OTHER TOOLS -->
+          <div class="res-panel" id="res-tools" style="overflow-y:auto;max-height:calc(100% - 130px);">
+            <div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:4px;">This concept works in every major AI tool.</div>
+            <div style="font-size:11px;color:var(--cl-txt3);margin-bottom:12px;line-height:1.5;">
+              Projects is Claude's name for it. ChatGPT calls it Custom GPTs. Gemini calls it Gems. The idea is identical everywhere — set your context once, stop repeating yourself forever.
+            </div>
+            <a class="tool-link-card" href="https://bluebird-modules.vercel.app/C7.html" target="_blank">
+              <div class="tool-link-icon" style="background:var(--bb-a);color:var(--bb);">🔀</div>
+              <div class="tool-link-body">
+                <div class="tool-link-title">Cross-Tool Comparison Guide →</div>
+                <div class="tool-link-sub">See how Claude Projects maps to ChatGPT, Gemini, Perplexity, and Grok. Step-by-step setup for every tool.</div>
+              </div>
+              <div class="tool-link-arrow">›</div>
+            </a>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--cl-txt3);margin:12px 0 8px;">Quick reference</div>
+            <div style="background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;overflow:hidden;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+                <div style="padding:9px 11px;border-right:1px solid var(--cl-sb-b);border-bottom:1px solid var(--cl-sb-b);">
+                  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--cl-accent);margin-bottom:3px;">Claude</div>
+                  <div style="font-size:11px;color:var(--cl-txt);font-weight:600;">Projects</div>
+                  <div style="font-size:10px;color:var(--cl-txt3);margin-top:1px;">Best for deep document work</div>
+                </div>
+                <div style="padding:9px 11px;border-bottom:1px solid var(--cl-sb-b);">
+                  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#10A37F;margin-bottom:3px;">ChatGPT</div>
+                  <div style="font-size:11px;color:var(--cl-txt);font-weight:600;">Custom GPTs</div>
+                  <div style="font-size:10px;color:var(--cl-txt3);margin-top:1px;">Best for shareable tools</div>
+                </div>
+                <div style="padding:9px 11px;border-right:1px solid var(--cl-sb-b);border-bottom:1px solid var(--cl-sb-b);">
+                  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#4285F4;margin-bottom:3px;">Gemini</div>
+                  <div style="font-size:11px;color:var(--cl-txt);font-weight:600;">Gems</div>
+                  <div style="font-size:10px;color:var(--cl-txt3);margin-top:1px;">Best if you live in Google</div>
+                </div>
+                <div style="padding:9px 11px;border-bottom:1px solid var(--cl-sb-b);">
+                  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#20B2AA;margin-bottom:3px;">Perplexity</div>
+                  <div style="font-size:11px;color:var(--cl-txt);font-weight:600;">Spaces</div>
+                  <div style="font-size:10px;color:var(--cl-txt3);margin-top:1px;">Best for live research</div>
+                </div>
+                <div style="padding:9px 11px;grid-column:1/-1;">
+                  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#1DA1F2;margin-bottom:3px;">Grok</div>
+                  <div style="font-size:11px;color:var(--cl-txt);font-weight:600;">Memory (Projects coming)</div>
+                  <div style="font-size:10px;color:var(--cl-txt3);margin-top:1px;">Best for massive context — 2M tokens</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PANEL: WHAT'S NEXT -->
+          <div class="res-panel" id="res-next" style="overflow-y:auto;max-height:calc(100% - 130px);">
+            <div style="font-size:12px;font-weight:600;color:var(--cl-txt);margin-bottom:8px;">You've built the foundation. Here's what to do now.</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="padding:11px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                  <div style="font-size:14px;">1️⃣</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--cl-txt);">Use a prompt from the library</div>
+                </div>
+                <div style="font-size:11px;color:var(--cl-txt3);line-height:1.5;">Go to the Prompt Library tab, pick one, fill in the highlighted fields, and paste it into your new project. See what it produces on the first try.</div>
+              </div>
+              <div style="padding:11px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                  <div style="font-size:14px;">2️⃣</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--cl-txt);">Build your second project</div>
+                </div>
+                <div style="font-size:11px;color:var(--cl-txt3);line-height:1.5;">One project is a start. Three is a system. Think about what you explain most often — to a colleague, a tool, a client. Build a project around that context.</div>
+              </div>
+              <div style="padding:11px 13px;background:var(--cl-inp);border:1px solid var(--cl-sb-b);border-radius:9px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                  <div style="font-size:14px;">3️⃣</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--cl-txt);">Check how this works in your other tools</div>
+                </div>
+                <div style="font-size:11px;color:var(--cl-txt3);line-height:1.5;">Use ChatGPT or Gemini too? The "Other Tools" tab shows you the exact equivalent feature in every major AI tool.</div>
+              </div>
+            </div>
+            <div style="margin-top:12px;">
+              <a class="open-cta" href="https://claude.ai/projects" target="_blank">
+                <div style="font-size:20px;">🐦</div>
+                <div>
+                  <div class="open-cta-title">Open Claude Projects →</div>
+                  <div class="open-cta-sub">Your project is waiting. Go build something real.</div>
+                </div>
+                <div style="margin-left:auto;color:var(--cl-accent);font-size:16px;">›</div>
+              </a>
+            </div>
+          </div>
+
         </div>
 
         <!-- NAV BAR — pinned inside browser -->
@@ -1237,29 +1449,81 @@ Always: Lead with value. Short sentences.</div>
 </div>
 
 <script>
-/* ── PROMPTS ── high-quality starters for Claude Projects */
+/* ── PROMPTS — C8 Universal Prompt Structure (ROLE→CONTEXT→INPUTS→REQUEST→CLOSER) ── */
 const PROMPTS = [
   {
-    role:'Content Creation',
-    text:'Write a LinkedIn post about [topic] in our voice. Keep it under 200 words, lead with a hook, and end with a question to drive comments. Sound like us — confident, real, human.'
+    cat:'Setup',
+    name:'Write project instructions from scratch',
+    hint:'Start here when building a new project',
+    sections:[
+      {label:'ROLE',   color:'#DB2777', text:'You are an expert AI workflow designer who builds Claude Project instruction systems for busy professionals — people who want to get results without re-explaining themselves every session.'},
+      {label:'CONTEXT',color:'#2F7BE5', text:'I am building a Claude Project for: [describe what this project will help you with]\nMy role / work context: [who you are, what you do]\nTone I want: [e.g. direct, casual, analytical, warm]\nThings Claude should never do: [e.g. use jargon, be overly formal, bullet everything]'},
+      {label:'REQUEST', color:'#16A34A', text:'Write me a complete set of project instructions under 200 words that I can paste directly into Claude\'s Instructions field. Include: role definition, my context, voice guidelines, and 2-3 hard rules.'},
+      {label:'CLOSER',  color:'#7C3AED', text:'Ask me any clarifying questions before writing. I would rather answer one question than get instructions I have to rewrite.'},
+    ]
   },
   {
-    role:'Content Repurposing',
-    text:'Take this piece of content and turn it into 3 formats: a LinkedIn post, a short-form caption, and a 3-bullet email teaser. Keep our voice across all three.\n\n[Paste original content here]'
+    cat:'Content',
+    name:'LinkedIn post in my voice',
+    hint:'Core content creation — works immediately in any content project',
+    sections:[
+      {label:'ROLE',   color:'#DB2777', text:'You are a social media strategist and copywriter who writes in my exact brand voice. You already know my voice from this project\'s instructions.'},
+      {label:'CONTEXT',color:'#2F7BE5', text:'Platform: LinkedIn\nTarget audience: [who reads my posts — e.g. professionals learning AI, small business owners]\nGoal of this post: [inform / inspire / drive comments / promote something]'},
+      {label:'INPUTS', color:'#D97706', text:'Topic or moment I want to write about:\n[describe it conversationally — a rough brain dump is fine]'},
+      {label:'REQUEST', color:'#16A34A', text:'Write a LinkedIn post. Under 200 words. Lead with a hook that earns the scroll. End with a question that drives comments. Sound like me — confident, real, human. Not a press release.'},
+      {label:'CLOSER',  color:'#7C3AED', text:'Give me one version. If I want a rewrite or alternate angle I will ask.'},
+    ]
   },
   {
-    role:'Brand Voice Check',
-    text:'Review this draft for brand voice consistency. Does it sound like Bluebird? Flag anything that sounds too corporate, too generic, or off-tone. Suggest specific rewrites.\n\n[Paste draft here]'
+    cat:'Debug',
+    name:'Debug an integration error',
+    hint:'Paste any error — Make.com, API, webhook, dashboard',
+    sections:[
+      {label:'ROLE',   color:'#DB2777', text:'You are a senior automation engineer and API integration specialist. You think in root causes, not symptoms. Before suggesting any fix, identify exactly why the error happened.'},
+      {label:'CONTEXT',color:'#2F7BE5', text:'I am building: [e.g. a Make.com automation / a dashboard integration / a webhook]\nTools involved: [e.g. Make.com + Notion + Slack]\nWhat it should do: [1-2 sentences — what happens when it works]'},
+      {label:'INPUTS', color:'#D97706', text:'Error message (paste exactly):\n[paste the full error here]\n\nWhat I\'ve already tried:\n[e.g. re-authenticated, checked field mapping, tried different module]'},
+      {label:'REQUEST', color:'#16A34A', text:'1. Diagnose the root cause — what is actually broken and why\n2. Give me a step-by-step fix I can follow right now\n3. Flag anything else that could cause a future problem'},
+      {label:'CLOSER',  color:'#7C3AED', text:'If you need more context to diagnose accurately, tell me exactly what to paste next. Do not guess.'},
+    ]
   },
   {
-    role:'Content Strategy',
-    text:'Give me 10 post ideas for this week based on what\'s relevant in the AI automation space right now. Frame each one as a specific Bluebird angle — tie it to our story, our tools, or our audience.'
+    cat:'Setup',
+    name:'Audit and improve existing instructions',
+    hint:'When your project feels generic or off-voice',
+    sections:[
+      {label:'ROLE',   color:'#DB2777', text:'You are a prompt engineer who specializes in Claude Project instructions. You make AI workspaces feel personal, specific, and useful — not generic.'},
+      {label:'INPUTS', color:'#D97706', text:'Here are my current project instructions:\n[paste your instructions here]'},
+      {label:'REQUEST', color:'#16A34A', text:'Review them and tell me:\n1. What is working\n2. What is vague or missing\n3. One specific rewrite that would make Claude\'s responses noticeably sharper\n\nThen give me the improved version, ready to paste.'},
+      {label:'CLOSER',  color:'#7C3AED', text:'Be direct. If the instructions are weak, say so and tell me why.'},
+    ]
   },
   {
-    role:'Email Draft',
-    text:'Write a short email to our Bluebird list about [topic]. Casual tone, under 150 words, one clear CTA at the end. No fluff, no "I hope this email finds you well."'
+    cat:'Life',
+    name:'Step-by-step setup guide',
+    hint:'For any tech setup, app config, or account connection',
+    sections:[
+      {label:'ROLE',   color:'#DB2777', text:'You are a patient, practical tech setup guide. You explain every step with zero assumed knowledge. You never skip a step and you never say "it\'s easy." You give the actual clicks, not the concept.'},
+      {label:'CONTEXT',color:'#2F7BE5', text:'My devices: [e.g. iPhone 15, MacBook, iPad]\nMy tech comfort level: [total beginner / comfortable with settings / pretty technical]\nWhat I\'ve already tried: [or say "nothing yet"]'},
+      {label:'INPUTS', color:'#D97706', text:'What I\'m trying to set up:\n[describe what you want to connect or configure]\n\nWhat it needs to do when it works:\n[describe the end state you want]'},
+      {label:'REQUEST', color:'#16A34A', text:'Give me a complete setup plan:\n1. Recommended order — what to do first and why\n2. Step-by-step instructions — exact menu names and button labels\n3. How to test it — how do I know it worked?\n4. The most common failure point and how to fix it'},
+      {label:'CLOSER',  color:'#7C3AED', text:'Write this like you are standing behind me watching my screen. If there is a step where I am likely to get confused, flag it.'},
+    ]
   },
 ];
+
+/* ── RESOURCES TAB FUNCTIONS ── */
+function switchResTab(tab, btn){
+  document.querySelectorAll('.res-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.res-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  G('res-' + tab).classList.add('active');
+}
+
+function jumpToResources(){
+  showComplete();
+}
+
+
 
 /* ── STEPS ── */
 const STEPS = [
@@ -1326,16 +1590,61 @@ function buildPips(){
 }
 function buildPromptCards(){
   const el=G('promptCards'); if(!el) return;
-  PROMPTS.forEach(p=>{
-    const d=document.createElement('div'); d.className='prompt-card';
-    d.innerHTML='<div class="prompt-card-role">'+p.role+'</div><div class="prompt-card-text">'+p.text.replace(/\n/g,'<br>')+'</div><button class="prompt-card-copy" onclick="copyPrompt(this,\''+encodeURIComponent(p.text)+'\')">Copy</button>';
+  PROMPTS.forEach((p,pi)=>{
+    const id='pc'+pi;
+    const sectionsHtml = p.sections.map(s=>{
+      const text = s.text.replace(/\[([^\]]+)\]/g,'<span class="pc-fill">[$1]</span>').replace(/\n/g,'<br>');
+      return `<div class="pc-section">
+        <div class="pc-sec-label"><div class="pc-sec-dot" style="background:${s.color};"></div><span style="color:${s.color};">${s.label}</span></div>
+        <div class="pc-sec-text">${text}</div>
+      </div>`;
+    }).join('');
+    const d=document.createElement('div');
+    d.className='prompt-card';
+    d.id=id;
+    d.innerHTML=`
+      <div class="prompt-card-head" onclick="togglePC('${id}')">
+        <div class="prompt-card-meta">
+          <div class="prompt-card-role">${p.cat}</div>
+          <div class="prompt-card-name">${p.name}</div>
+          <div class="prompt-card-hint">${p.hint}</div>
+        </div>
+        <div class="prompt-card-toggle">
+          <span>View</span>
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="prompt-card-body">${sectionsHtml}</div>
+      <div class="prompt-card-footer">
+        <span class="pc-hint-txt">${p.hint}</span>
+        <button class="pc-copy-btn" id="pcopy${pi}" onclick="copyPC(${pi})">
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>`;
     el.appendChild(d);
   });
 }
-function copyPrompt(btn,enc){
-  navigator.clipboard.writeText(decodeURIComponent(enc)).then(()=>{
-    btn.textContent='Copied!'; btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+
+function togglePC(id){
+  const el=G(id);
+  el.classList.toggle('pc-open');
+  const span=el.querySelector('.prompt-card-toggle span');
+  span.textContent=el.classList.contains('pc-open')?'Close':'View';
+}
+
+function copyPC(idx){
+  const p=PROMPTS[idx];
+  let text='';
+  p.sections.forEach(s=>{ text+=s.label+':\n'+s.text.replace(/<[^>]+>/g,'')+'\n\n'; });
+  navigator.clipboard.writeText(text.trim()).then(()=>{
+    const btn=G('pcopy'+idx);
+    btn.innerHTML='<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{
+      btn.innerHTML='<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+      btn.classList.remove('copied');
+    },2400);
   });
 }
 
@@ -1488,10 +1797,12 @@ const stepHandlers = {
         show('editInstrPanel');
         G('stepInstr').innerHTML='<strong>Instructions update live.</strong> Every future conversation uses the new version immediately.';
         showNext('Finish →');
-        G('navNext').onclick=()=>showComplete();
+        G('navNext').onclick=()=>goTo(9);
       };
     };
   },
+
+  9(){ showComplete(); },
 };
 
 /* ── INTERACTIONS ── */
@@ -1557,16 +1868,19 @@ function addMsg(role,html){
 
 function showComplete(){
   showView('vComplete'); setUrl('claude.ai/projects');
-  G('stepGuide').innerHTML='<div class="step-badge"><div class="step-badge-n">✓</div><span>Complete</span></div><div class="step-instr" style="color:var(--cl-txt2);">Project live. Your prompt starter pack is ready to copy.</div>';
+  G('stepGuide').innerHTML='<div class="step-badge"><div class="step-badge-n">✓</div><span>Complete</span></div><div class="step-instr" style="color:var(--cl-txt2);">Project live. Explore your resources below.</div>';
   G('coachAv').className='coach-av emma'; G('coachAv').textContent='🎉';
   G('coachWho').className='coach-who emma'; G('coachWho').textContent='Emma & Dan';
-  G('coachLine').innerHTML='Think about the thing you explain most often &mdash; to a new tool, to a colleague, to yourself. The background, the context, the &quot;here&rsquo;s what I&rsquo;m working on.&quot; Imagine never explaining that again. That&rsquo;s what you just set up. Every time you open this project from here, that setup is already done. What used to be overhead is just gone. And here&rsquo;s the part we didn&rsquo;t expect: it&rsquo;s not just faster. It&rsquo;s clearer. When you stop spending energy on setup, something shifts. You start thinking bigger. You start working on the thing instead of just getting to the thing. That&rsquo;s what this was always about. 🎉';
+  G('coachLine').innerHTML='Think about the thing you explain most often &mdash; to a new tool, to a colleague, to yourself. The background, the context, the &quot;here&rsquo;s what I&rsquo;m working on.&quot; Imagine never explaining that again. That&rsquo;s what you just set up. Every time you open this project, that context is already loaded. What used to be overhead is just gone. 🎉';
   STEPS.forEach((_,i)=>{ G('pip-'+i).className='pip done'; G('sbs-'+i).className='sb-step done'; G('sbn-'+i).textContent='✓'; });
   G('pipLabel').textContent='✓ Done';
   G('navBack').classList.remove('hidden'); G('navBack').onclick=()=>goTo(8);
   G('navNext').classList.remove('hidden');
   G('navNext').textContent='↺ Replay'; G('navNext').className='nav-next';
   G('navNext').onclick=()=>location.reload();
+  // Reveal Resources tab in sidebar
+  const resTab=G('sbResTab');
+  if(resTab){ resTab.classList.remove('hidden'); resTab.classList.add('active'); }
 }
 
 /* ── HELPERS ── */
@@ -1618,7 +1932,7 @@ async function sendQuestion(){
   appendQAMsg('coach','<div class="dots"><span></span><span></span><span></span></div>',tid);
   G('qaSendBtn').disabled=true;
   try{
-    const resp=await fetch('https://bluebird-dashboard-zeta.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS+'\n\nStep '+(cur+1)+': "'+sn+'".',messages:[...qaHistory.slice(-4).map(i=>([{role:'user',content:i.q},{role:'assistant',content:i.a}])).flat(),{role:'user',content:q}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS+'\n\nStep '+(cur+1)+': "'+sn+'".',messages:[...qaHistory.slice(-4).map(i=>([{role:'user',content:i.q},{role:'assistant',content:i.a}])).flat(),{role:'user',content:q}]})});
     const data=await resp.json();
     const ans=data.content?.[0]?.text||'Great question — try rephrasing for a clearer answer.';
     document.getElementById(tid)?.querySelector('.qa-msg-body')&&(document.getElementById(tid).querySelector('.qa-msg-body').innerHTML=ans);
